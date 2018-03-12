@@ -8,22 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		34960FA32057171A00977A53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34960FA22057171A00977A53 /* AppDelegate.swift */; };
-		34960FA52057171A00977A53 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34960FA42057171A00977A53 /* ViewController.swift */; };
+		34960FA52057171A00977A53 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34960FA42057171A00977A53 /* PostsView.swift */; };
 		34960FA82057171A00977A53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34960FA62057171A00977A53 /* Main.storyboard */; };
 		34960FAB2057171A00977A53 /* snapshot.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 34960FA92057171A00977A53 /* snapshot.xcdatamodeld */; };
 		34960FAD2057171A00977A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34960FAC2057171A00977A53 /* Assets.xcassets */; };
 		34960FB02057171A00977A53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34960FAE2057171A00977A53 /* LaunchScreen.storyboard */; };
+		34960FBA2057208A00977A53 /* PostsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34960FB92057208A00977A53 /* PostsViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		34960F9F2057171A00977A53 /* snapshot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = snapshot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34960FA22057171A00977A53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		34960FA42057171A00977A53 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		34960FA42057171A00977A53 /* PostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
 		34960FA72057171A00977A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		34960FAA2057171A00977A53 /* snapshot.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = snapshot.xcdatamodel; sourceTree = "<group>"; };
 		34960FAC2057171A00977A53 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		34960FAF2057171A00977A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		34960FB12057171A00977A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		34960FB92057208A00977A53 /* PostsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,8 +58,9 @@
 		34960FA12057171A00977A53 /* snapshot */ = {
 			isa = PBXGroup;
 			children = (
+				34960FB82057189E00977A53 /* Handlers and Extensions */,
+				34960FB72057189300977A53 /* ViewControllers */,
 				34960FA22057171A00977A53 /* AppDelegate.swift */,
-				34960FA42057171A00977A53 /* ViewController.swift */,
 				34960FA62057171A00977A53 /* Main.storyboard */,
 				34960FAC2057171A00977A53 /* Assets.xcassets */,
 				34960FAE2057171A00977A53 /* LaunchScreen.storyboard */,
@@ -65,6 +68,22 @@
 				34960FA92057171A00977A53 /* snapshot.xcdatamodeld */,
 			);
 			path = snapshot;
+			sourceTree = "<group>";
+		};
+		34960FB72057189300977A53 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				34960FA42057171A00977A53 /* PostsView.swift */,
+				34960FB92057208A00977A53 /* PostsViewCell.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		34960FB82057189E00977A53 /* Handlers and Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Handlers and Extensions";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,7 +159,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				34960FAB2057171A00977A53 /* snapshot.xcdatamodeld in Sources */,
-				34960FA52057171A00977A53 /* ViewController.swift in Sources */,
+				34960FA52057171A00977A53 /* PostsView.swift in Sources */,
+				34960FBA2057208A00977A53 /* PostsViewCell.swift in Sources */,
 				34960FA32057171A00977A53 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -285,7 +305,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -300,7 +320,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -6,6 +6,10 @@ Used to get subreddits and posts from Reddit's API
 class RedditHandler {
 	var authenticatedUser: AuthenticatedUser? = nil
 	
+	init (authenticatedUser: AuthenticatedUser? = nil) {
+		self.authenticatedUser = authenticatedUser
+	}
+	
 	/**
 	- Parameter authCode: String user authorization code to login
 	

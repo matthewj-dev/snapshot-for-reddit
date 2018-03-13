@@ -20,7 +20,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         postCollection.delegate = self

@@ -689,20 +689,22 @@ class RedditHandler {
 			request.addValue("Basic \(authorizationString!)", forHTTPHeaderField: "Authorization")
 			
 			guard let authResponse = RedditHandler().getRedditResponse(request: request) else {
+				print("AuthResponse failure")
 				return false
 			}
 			
-			guard let authToken = authResponse.data["access_token"] as? String, let refreshToken = authResponse.data["refresh_token"] as? String else {
+			guard let authToken = authResponse.data["access_token"] as? String else {
+				print("Token parse failure")
 				return false
 			}
 			
 			accessToken = authToken
-			self.refreshToken = refreshToken
 			
 			if let deadTime = authResponse.data["expires_in"] as? Int {
 				expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
 			}
 			else {
+				print("Date Update failure")
 				return false
 			}
 			
@@ -730,3 +732,4 @@ class RedditHandler {
 		case invalidParse(String)
 	}
 }
+

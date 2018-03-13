@@ -631,9 +631,8 @@ class RedditHandler {
 			
 			let apiInstance = RedditHandler()
 			var request = URLRequest(url: URL(string: "https://oauth.reddit.com/api/v1/me")!)
-			print(authResponse.data.keys)
+			
 			if let deadTime = authResponse.data["expires_in"] as? Int {
-				print("Got Int!")
 				expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
 			}
 			
@@ -700,19 +699,16 @@ class RedditHandler {
 			accessToken = authToken
 			self.refreshToken = refreshToken
 			
-			if let deadString = authResponse.data["expires_in"] as? String {
-				if let deadTime = Int(deadString) {
-					expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
-				}
-				else {
-					return false
-				}
+			if let deadTime = authResponse.data["expires_in"] as? Int {
+				expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
 			}
 			else {
 				return false
 			}
+			
 			return true
 		}
+		
 		
 		func tokenIsExpired() -> Bool {
 			return Date() > expireyDate!

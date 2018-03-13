@@ -23,26 +23,26 @@
                                 <rect key="frame" x="0.0" y="88" width="375" height="641"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6Si-F6-H5j">
-                                    <size key="itemSize" width="181" height="120"/>
+                                    <size key="itemSize" width="182" height="136"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="PostsViewCell" reuseIdentifier="PostsViewCell" id="AfR-o3-LA5" customClass="PostsViewCell" customModule="snapshot" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="182" height="120"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="182" height="136"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                            <rect key="frame" x="0.0" y="0.0" width="182" height="120"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="182" height="136"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ddO-S0-OaQ">
-                                                    <rect key="frame" x="0.0" y="0.0" width="182" height="96"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="182" height="91"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lVR-P6-CTY">
-                                                    <rect key="frame" x="0.0" y="94" width="182" height="22"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lVR-P6-CTY">
+                                                    <rect key="frame" x="0.0" y="89" width="182" height="47"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="22" id="GRR-UG-of4"/>
+                                                        <constraint firstAttribute="height" constant="47" id="GRR-UG-of4"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -56,10 +56,10 @@
                                             <constraint firstAttribute="trailingMargin" secondItem="ddO-S0-OaQ" secondAttribute="trailing" constant="-8" id="DT7-L7-nUG"/>
                                             <constraint firstItem="lVR-P6-CTY" firstAttribute="top" secondItem="ddO-S0-OaQ" secondAttribute="bottom" constant="-2" id="IIZ-tj-vdO"/>
                                             <constraint firstItem="lVR-P6-CTY" firstAttribute="leading" secondItem="AfR-o3-LA5" secondAttribute="leading" id="TtW-em-UK4"/>
-                                            <constraint firstAttribute="bottomMargin" secondItem="lVR-P6-CTY" secondAttribute="bottom" constant="-4" id="ivh-tM-J9h"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="lVR-P6-CTY" secondAttribute="bottom" constant="-8" id="ivh-tM-J9h"/>
                                             <constraint firstItem="ddO-S0-OaQ" firstAttribute="top" secondItem="AfR-o3-LA5" secondAttribute="top" id="knW-J4-Xij"/>
                                         </constraints>
-                                        <size key="customSize" width="182" height="120"/>
+                                        <size key="customSize" width="182" height="136"/>
                                         <connections>
                                             <outlet property="postTitle" destination="lVR-P6-CTY" id="Ywl-eL-0na"/>
                                             <outlet property="thumbnail" destination="ddO-S0-OaQ" id="Lp3-sv-EgH"/>

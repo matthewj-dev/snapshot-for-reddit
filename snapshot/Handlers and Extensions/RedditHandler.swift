@@ -6,14 +6,17 @@ Used to get subreddits and posts from Reddit's API
 class RedditHandler {
 	var authenticatedUser: AuthenticatedUser? = nil
 	
+	/**
+	Sets an authenticated user to be used with Reddit API Requests
+	*/
 	init (authenticatedUser: AuthenticatedUser? = nil) {
 		self.authenticatedUser = authenticatedUser
 	}
 	
 	/**
-	- Parameter authCode: String user authorization code to login
-	
-	- Returns:
+	Creates an Authenticated User from an authorization code obtained from Reddit
+	- Parameter authCode: String user authorization code from Oauth callback
+	- Returns: AuthenticatedUser
 	*/
 	func getAuthenticatedUser(authCode: String) -> AuthenticatedUser? {
 		
@@ -116,6 +119,11 @@ class RedditHandler {
 		return redditResponse
 	}
 	
+	/**
+	Creates a RedditResponse from a URL. Will use stored AuthenticatedUser to attempt to create authenticated response
+	- Parameter url: URL of Reddit object to get
+	- Returns: RedditResponse
+	*/
 	private func getRedditResponse(url: URL) -> RedditResponse? {
 		
 		if authenticatedUser != nil {
@@ -216,6 +224,11 @@ class RedditHandler {
 		}
 	}
 	
+	/**
+	Creates a RedditUser object from a username
+	- Parameter username: String of a reddit username
+	- Returns: RedditUser
+	*/
 	func getUser(username: String) -> RedditUser? {
 		let userURLString = "https://www.reddit.com/user/\(username)/about.json"
 		let postsURLString = "https://www.reddit.com/user/\(username).json"
@@ -251,7 +264,7 @@ class RedditHandler {
 		}
 		
 		/**
-		Parsed from JSON response
+		Parsed data object from JSON response
 		*/
 		var parsedData: [String:Any]? {
 			guard let returnableData = data["data"] as? [String:Any] else {
@@ -566,10 +579,18 @@ class RedditHandler {
 		}
 	}
 	
+	/**
+	Reddit user. Has access to posts and details of user
+	*/
 	class RedditUser {
 		let data: [String:Any?]
 		let posts: [Subreddit.RedditPost]
 		
+		/**
+		- Parameters:
+		 - aboutResponse: RedditResponse of users about page
+		 - postsResponse: RedditResponse of users main page
+		*/
 		init(aboutResponse: RedditResponse, postsResponse: RedditResponse) throws {
 			guard let userData = aboutResponse.parsedData else {
 				throw UserError.invalidParse("Unable to parse some user data")
@@ -589,13 +610,16 @@ class RedditHandler {
 			
 		}
 		
+		/**
+		Name of user
+		*/
 		var name: String? {
-			guard let username = data["name"] as? String else {
-				return nil
-			}
-			return username
+			return data["name"] as? String
 		}
 		
+		/**
+		Post Karma of user
+		*/
 		var postKarma: String? {
 			guard let importantKarma = data["link_karma"] as? Int else {
 				return nil
@@ -603,6 +627,9 @@ class RedditHandler {
 			return String(importantKarma)
 		}
 		
+		/**
+		Comment Karma of user
+		*/
 		var commentKarma: String? {
 			guard let plebKarma = data["comment_karma"] as? Int else {
 				return nil
@@ -620,6 +647,7 @@ class RedditHandler {
 	
 	
 	/**
+	Authenticated User that extends from RedditUser. Has access token management functions.
 	*/
 	class AuthenticatedUser: RedditUser {
 		var accessToken: String
@@ -627,6 +655,9 @@ class RedditHandler {
 		var authenticationData: Dictionary<String, Any>
 		var expireyDate: Date?
 		
+		/**
+		- Parameter authResponse: RedditResponse object that contains authorization data
+		*/
 		init(authResponse: RedditResponse) throws {
 			
 			let apiInstance = RedditHandler()
@@ -676,6 +707,10 @@ class RedditHandler {
 			
 		}
 		
+		/**
+		Refreshes the access token currently stored using the refresh token that is stored
+		- Returns: Bool of whether the refresh was successful or not
+		*/
 		func refreshAccessToken() -> Bool {
 			var request = URLRequest(url: URL(string: "https://www.reddit.com/api/v1/access_token")!)
 			// make the request POST
@@ -711,11 +746,19 @@ class RedditHandler {
 			return true
 		}
 		
-		
+		/**
+		Compares current date to determine whether the key has expired
+		- Returns: Bool on state of if key has expired
+		*/
 		func tokenIsExpired() -> Bool {
 			return Date() > expireyDate!
 		}
 		
+		/**
+		Creates an authorized URLRequest based on the currently stored key
+		- Parameter urlSuffix: Suffix to add to the end of the oauth request URL
+		- Returns: URLRequest that has been setup to authenticate as the current user
+		*/
 		func getAuthenticatedRequest(urlSuffix: String) -> URLRequest {
 			let url = "https://oauth.reddit.com" + urlSuffix
 			var request = URLRequest(url: URL(string: url)!)

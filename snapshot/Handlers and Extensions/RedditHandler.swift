@@ -6,6 +6,63 @@ import Foundation
 class RedditHandler {
     
     /**
+     - Parameter authCode: String user authorization code to login
+     
+     - Returns:
+     */
+    func getAuthenticatedUser(authCode: String) {
+        
+        // http request for oauth
+        var request = URLRequest(url: URL(string: "https://www.reddit.com/api/v1/access_token")!)
+        // make the request POST
+        request.httpMethod = "POST"
+        
+        // fill the request body with the auth code from the callback
+        request.httpBody = "grant_type=authorization_code&code=\(authCode)&redirect_uri=snapshot://response".data(using: .utf8)
+        
+        // add developer code to HTTP header
+        let authorizationString = String(format: "%@:%@", "udgVMzpax63hJQ", "").data(using: .utf8)?.base64EncodedString()
+        request.addValue("Basic \(authorizationString!)", forHTTPHeaderField: "Authorization")
+        
+        //Creates and enters DispatchGroup
+        let group = DispatchGroup()
+        group.enter()
+        
+        let task = URLSession.shared.dataTask(with: request) {data, response, error in
+            print((response as? HTTPURLResponse)?.statusCode)
+            if data != nil, error == nil {
+                do {
+                    if let jsonData = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]{
+                        do {
+                            let authenticatedUser = try RedditHandler.AuthenticatedUser(authResponse: RedditResponse(jsonReturnData: jsonData))
+                        }
+                        catch {
+                            print(error)
+                        
+                        }
+                    }
+                }
+                catch {
+                    print(error)
+                }
+            }
+            else {
+                print(error)
+            }
+            
+            //Leave DispatchGroup once the callback has concluded
+            group.leave()
+        }
+        //Starts the task
+        task.resume()
+        
+        //Waits for the DispatchGroup
+        group.wait()
+        
+        
+    }
+    
+    /**
      Creates a RedditResponse object that is able to be parsed by the Subreddit constructor.
      Will wait until response is returned.
      - Parameter url: URL object to Reddit API to be parsed
@@ -24,8 +81,9 @@ class RedditHandler {
             print((response as? HTTPURLResponse)?.statusCode)
             if data != nil, error == nil {
                 do {
-                    let jsonData = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as! [String:Any]
-                    redditResponse = RedditResponse(jsonReturnData: jsonData)
+                    if let jsonData = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]{
+                        redditResponse = RedditResponse(jsonReturnData: jsonData)
+                    }
                 }
                 catch {
                     print(error)
@@ -111,6 +169,45 @@ class RedditHandler {
     }
     
     /**
+     Creates a subreddit asyncriously and feeds the subreddit into the completion block
+     - Parameter Subreddit: String name of the subreddit
+     - Parameter count: DEFAULT 25 - Number of posts to fetch
+     - Parameter id: (Optional) ID to append for when fetching additional items past initial load
+     - Parameter type: DEFAULT normal - Type of subreddit to create
+     - Parameter completion: Block with subreddit? parameter with no return
+     */
+    func asyncGetSubreddit(Subreddit name: String, count: Int = 25, id: String? = nil, type: Subreddit.SubredditType = .normal, completion: @escaping (Subreddit?) -> Void) {
+        DispatchQueue.global().async {
+            let sub = self.getSubreddit(Subreddit: name, count: count, id: id, type: type)
+            DispatchQueue.main.async {
+                completion(sub)
+            }
+        }
+    }
+    
+    func getUser(username: String) -> RedditUser? {
+        let userURLString = "https://www.reddit.com/user/\(username)/about.json"
+        let postsURLString = "https://www.reddit.com/user/\(username).json"
+        
+        guard let url = URL(string: userURLString), let postsURL = URL(string: postsURLString) else {
+            return nil
+        }
+        
+        guard let response = getRedditResponse(url: url), let postsResponse = getRedditResponse(url: postsURL) else {
+            return nil
+        }
+        
+        do {
+            return try RedditUser.init(aboutResponse: response, postsResponse: postsResponse)
+        }
+        catch {
+            print(error)
+            return nil
+        }
+        
+    }
+    
+    /**
      Base Json response from Reddit API - Used to pass into other constructors for parsing
      */
     class RedditResponse {
@@ -120,6 +217,16 @@ class RedditHandler {
          */
         init(jsonReturnData:[String:Any]) {
             data = jsonReturnData
+        }
+        
+        /**
+         Parsed from JSON response
+        */
+        var parsedData: [String:Any]? {
+            guard let returnableData = data["data"] as? [String:Any] else {
+                return nil
+            }
+            return returnableData
         }
     }
     
@@ -133,6 +240,7 @@ class RedditHandler {
          */
         var name: String?
         let type: SubredditType
+        let bannerURL: URL?
         
         /**
          - Parameter response: Response from Reddit API
@@ -168,6 +276,37 @@ class RedditHandler {
             }
             if !posts.isEmpty {
                 name = posts[0].subreddit
+            }
+            
+            // Gets banner URL if subreddit name is not nil
+            if name != nil {
+                
+                if let tempResponse = RedditHandler().getRedditResponse(url: URL(string: "https://www.reddit.com/r/\(name!)/about.json")!){
+                    
+                    if let parsedData = tempResponse.parsedData as? [String:Any] {
+                        
+                        if var urlString = parsedData["banner_img"] as? String {
+                            
+                            urlString = urlString.replacingOccurrences(of: "&amp;", with: "&", options: .literal, range: nil)
+                            bannerURL = URL(string: urlString)
+                        }
+                        else {
+                            print("No Key")
+                            bannerURL = nil
+                        }
+                    }
+                    else{
+                        bannerURL = nil
+                    }
+                }
+                else {
+                    print("Response not valid")
+                    bannerURL = nil
+                }
+            }
+            else {
+                print("No name")
+                bannerURL = nil
             }
         }
         
@@ -215,6 +354,20 @@ class RedditHandler {
                 return true
             }
             return false
+        }
+        
+        /**
+         Loads additional posts asyncriously into the subreddits array of posts
+         - Parameter count: (Optional) Number of new posts to append with
+         - Parameter completion: Block with boolean of success status of loading additional posts
+         */
+        func asyncLoadAdditionalPosts(count:Int? = nil, completion: @escaping (Bool)->Void){
+            DispatchQueue.global().async {
+                let result = self.loadAdditionalPosts(count: count)
+                DispatchQueue.main.async {
+                    completion(result)
+                }
+            }
         }
         
         /**
@@ -379,6 +532,125 @@ class RedditHandler {
              Creates a subreddit where only links with thumbnails are added. Can create empty subreddit objects.
              */
             case image
+        }
+    }
+    
+    class RedditUser {
+        let data: [String:Any?]
+        let posts: [Subreddit.RedditPost]
+        
+        init(aboutResponse: RedditResponse, postsResponse: RedditResponse) throws {
+            guard let userData = aboutResponse.parsedData else {
+                throw UserError.invalidParse("Unable to parse some user data")
+            }
+            data = userData
+            
+            do {
+                let tempSub = try Subreddit(response: postsResponse)
+                posts = tempSub.posts
+            }
+            catch {
+                print("User posts not found")
+                print(error)
+                throw error
+            }
+            
+            
+        }
+        
+        var name: String? {
+            guard let username = data["name"] as? String else {
+                return nil
+            }
+            return username
+        }
+        
+        var postKarma: String? {
+            guard let importantKarma = data["link_karma"] as? Int else {
+                return nil
+            }
+            return String(importantKarma)
+        }
+        
+        var commentKarma: String? {
+            guard let plebKarma = data["comment_karma"] as? Int else {
+                return nil
+            }
+            return String(plebKarma)
+        }
+        
+        enum UserError: Error {
+            case invalidParse(String)
+        }
+        
+    }
+    
+    
+    /**
+    */
+    class AuthenticatedUser {
+        var expireyDate: Date?
+        
+        init(authResponse: RedditResponse) throws {
+            if let deadString = authResponse.data["expires_in"] as? String {
+                if let deadTime = Int(deadString) {
+                    expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
+                }
+            }
+            
+            if let authToken = authResponse.data["access_token"] as? String {
+                
+                // make a new request to reddit oauth servers
+                var request = URLRequest(url: URL(string: "https://oauth.reddit.com/api/v1/me")!)
+                
+                // make the request POST
+                request.httpMethod = "POST"
+                
+                // add developer code to HTTP header
+                let authorizationString = String(format: "%@:%@", "bearer", "\(authToken)").data(using: .utf8)?.base64EncodedString()
+                request.addValue("Basic \(authorizationString!)", forHTTPHeaderField: "Authorization")
+                
+                //Creates and enters DispatchGroup
+                let group = DispatchGroup()
+                group.enter()
+                
+                let task = URLSession.shared.dataTask(with: request) {data, response, error in
+                    print((response as? HTTPURLResponse)?.statusCode)
+                    if data != nil, error == nil {
+                        do {
+                            if let jsonData = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]{
+                                do {
+                                    print(jsonData.keys)
+                                }
+                                catch {
+                                    print(error)
+                                    
+                                }
+                            }
+                        }
+                        catch {
+                            print(error)
+                        }
+                    }
+                    else {
+                        print(error)
+                    }
+                    
+                    //Leave DispatchGroup once the callback has concluded
+                    group.leave()
+                }
+                //Starts the task
+                task.resume()
+                
+                //Waits for the DispatchGroup
+                group.wait()
+            }
+            else {
+                print("whoops")
+            }
+            
+            
+            
         }
     }
     

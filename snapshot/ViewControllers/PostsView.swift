@@ -69,7 +69,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let sub = redditAPI.getSubreddit(Subreddit: "aww"){
+        if let sub = redditAPI.getSubreddit(Subreddit: "aww", count: 100, id: nil, type: .normal){
             subreddit = sub
             self.navigationItem.title = subreddit.name
             return subreddit.postCount

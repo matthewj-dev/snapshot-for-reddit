@@ -17,7 +17,7 @@ class RedditHandler {
     /**
 	Creates a URL request for an access token using
 	*/
-    func getAccessTokenRequest(grantType: String, grantLogic: String) -> URLRequest {
+    internal func getAccessTokenRequest(grantType: String, grantLogic: String) -> URLRequest {
         // http request for oauth
         var request = URLRequest(url: URL(string: "https://www.reddit.com/api/v1/access_token")!)
         // make the request POST
@@ -83,22 +83,6 @@ class RedditHandler {
             catch {
                 print("Error creating authorized data")
             }
-        }
-        return nil
-    }
-    
-    /**
-     Create an Authenticated User from packaged data from a previous Authenticated User
-     - Parameter packagedData: Dictionary from previous authorized user
-     - Returns: AuthenticatedUser?
-     */
-    func getAuthenticatedUser(packagedData: [String:Any]) -> AuthenticatedUser? {
-        do {
-            let authUser = try AuthenticatedUser(packagedData: packagedData)
-            return authUser
-        }
-        catch {
-            print(error)
         }
         return nil
     }

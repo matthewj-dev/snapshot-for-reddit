@@ -12,7 +12,7 @@ import Foundation
 /**
 Reddit user. Has access to posts and details of user
 */
-class RedditUser {
+class RedditUser: NSObject {
 	let data: [String:Any?]
 	let posts: [RedditPost]
 	
@@ -38,9 +38,19 @@ class RedditUser {
 		}
 	}
 	
-	//        private init (userData: [String:Any?], postsData: [Subreddit.RedditPost]){
-	//
-	//        }
+	/**
+	- Parameter userData: Dictionary of user data from previous load
+	- Parameter postsData: Array of RedditPosts from previous load, can be nil
+	*/
+	init (userData: [String:Any?], postsData: [RedditPost]?){
+		if postsData == nil {
+			posts = [RedditPost]()
+		}
+		else {
+			posts = postsData!
+		}
+		data = userData
+	}
 	
 	/**
 	Name of user

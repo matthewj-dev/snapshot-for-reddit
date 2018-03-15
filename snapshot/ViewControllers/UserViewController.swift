@@ -14,10 +14,16 @@ class UserViewController: UIViewController {
     var redditAPI = RedditHandler()
     var settings = UserDefaults.standard
     var ncCenter = NotificationCenter.default
+	
+	let manager = FileManager.default
+	var saveURL: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
+		saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
+		print(saveURL)
+		
         loginWindow = SFAuthenticationSession(url: URL(string: "https://www.reddit.com/api/v1/authorize.compact?client_id=udgVMzpax63hJQ&response_type=code&duration=permanent&state=ThisIsATestState&redirect_uri=snapshot://response&scope=identity%20edit%20mysubreddits%20read")!, callbackURLScheme: "snapshot", completionHandler: {url, error in
             if url != nil && url!.absoluteString.contains("code=") {
                 
@@ -26,7 +32,7 @@ class UserViewController: UIViewController {
                     self.redditAPI.authenticatedUser = newAuthUser
                     self.navigationItem.title = self.redditAPI.authenticatedUser?.name
                     self.tabBarController!.tabBar.items![1].title = self.redditAPI.authenticatedUser?.name
-                    self.settings.set(newAuthUser.packageDataforFutureCreation(), forKey: "userData")
+                    NSKeyedArchiver.archiveRootObject(newAuthUser, toFile: self.saveURL)
                     self.ncCenter.post(Notification(name: Notification.Name.init("userLogin")))
                 }
                 
@@ -34,16 +40,14 @@ class UserViewController: UIViewController {
         })
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        if let package = settings.object(forKey: "userData") as? [String:Any] {
-            if let authUser = redditAPI.getAuthenticatedUser(packagedData: package) {
-                redditAPI.authenticatedUser = authUser
-                self.navigationItem.title = self.redditAPI.authenticatedUser?.name
-                self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-                return
-            }
-        }
-        
-        loginWindow.start()
-    }
+	override func viewDidAppear(_ animated: Bool) {
+		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
+			redditAPI.authenticatedUser = authUser
+			self.navigationItem.title = self.redditAPI.authenticatedUser?.name
+			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+			return
+		}
+		
+		loginWindow.start()
+	}
 }

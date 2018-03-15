@@ -13,26 +13,29 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     @IBOutlet weak var postCollection: UICollectionView!
     
     let testNums = Array(repeating: "DOGGO", count: 200)
-    
+	
+	var ncCenter = NotificationCenter.default
+	let manager = FileManager.default
+	
     var redditAPI = RedditHandler()
-    var subreddit: Subreddit!
     var settings = UserDefaults.standard
-    var ncCenter = NotificationCenter.default
-    
-    
+	
+	var saveURL: String!
+    var subreddit: Subreddit!
+	
+	//Called when view has finished loading but not yet appeared on screen
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
         ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init("userLogin"), object: nil)
         
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
-        if let package = settings.object(forKey: "userData") as? [String:Any] {
-            if let authUser = redditAPI.getAuthenticatedUser(packagedData: package) {
-                redditAPI.authenticatedUser = authUser
-                self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-            }
-        }
+		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
+			redditAPI.authenticatedUser = authUser
+			self.navigationItem.title = self.redditAPI.authenticatedUser?.name
+			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+		}
         
         postCollection.delegate = self
         postCollection.dataSource = self
@@ -78,7 +81,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let sub = redditAPI.getSubreddit(Subreddit: "Home", count: 100, id: nil, type: .normal){
+        if let sub = redditAPI.getSubreddit(Subreddit: "", count: 100, id: nil, type: .normal){
             subreddit = sub
             
             if subreddit.name.isEmpty {
@@ -92,14 +95,15 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         }
         return 0
     }
-    
+	
+	
+	//Function called by Notification Center when notification notifies that a user has logged in
     @objc func userLoggedInReload() {
         
-        if let package = settings.object(forKey: "userData") as? [String:Any] {
-            if let authUser = redditAPI.getAuthenticatedUser(packagedData: package) {
-                redditAPI.authenticatedUser = authUser
-            }
-        }
+		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
+			redditAPI.authenticatedUser = authUser
+		}
+		
      postCollection.reloadData()
     }
 

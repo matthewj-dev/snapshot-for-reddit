@@ -11,7 +11,13 @@ import Foundation
 /**
 Authenticated User that extends from RedditUser. Has access token management functions.
 */
-class AuthenticatedUser: RedditUser {
+class AuthenticatedUser: RedditUser, NSCoding {
+	
+	
+
+	
+	
+	
 	var accessToken: String
 	var refreshToken: String
 	var authenticationData: Dictionary<String, Any>
@@ -61,74 +67,45 @@ class AuthenticatedUser: RedditUser {
 		}
 	}
 	
-	init(packagedData: [String:Any]) throws {
-		let api = RedditHandler()
+	/**
+	Decodes object and verifies that expire date has not passed
+	*/
+	required init?(coder aDecoder: NSCoder) {
+		let packagedData = aDecoder.decodeObject(forKey: "packagedContents") as! [String:Any]
 		
-		guard let authData = packagedData["authenticationData"] as? [String:Any] else {
-			throw UserError.invalidParse("Unable to parse Authentication Data")
-		}
+		authenticationData = packagedData["authenticationData"] as! [String:Any]
+		accessToken = authenticationData["access_token"] as! String
+		refreshToken = authenticationData["refresh_token"] as! String
+		expireyDate = (packagedData["expireDate"] as! Date)
 		
-		guard let token = authData["access_token"] as? String, let refreshToken = authData["refresh_token"] as? String else {
-			throw UserError.invalidParse("Error parsing from Authentication Data")
-		}
-		
-		guard let name = packagedData["username"] as? String else {
-			throw UserError.invalidParse("Error getting username")
-		}
-		
-		guard let expires = packagedData["expireDate"] as? Date else {
-			throw UserError.invalidParse("Error parsing previous expirey date")
-		}
-		
-		self.authenticationData = authData
-		self.accessToken = token
-		self.refreshToken = refreshToken
-		self.expireyDate = expires
-		
-		if Date() > expires {
-			let request = api.getAccessTokenRequest(grantType: "refresh_token", grantLogic: "refresh_token=\(self.refreshToken)")
-			
-			guard let authResponse = api.getRedditResponse(request: request) else {
-				print("AuthResponse failure")
-				throw UserError.invalidResponse()
-			}
-			
-			guard let authToken = authResponse.jsonReturnedData["access_token"] as? String else {
-				print("Token parse failure")
-				throw UserError.invalidParse("Token is invalid")
-			}
-			
-			accessToken = authToken
-			
-			if let deadTime = authResponse.jsonReturnedData["expires_in"] as? Int {
-				expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
-			}
-			else {
-				print("Date Update failure")
-				throw UserError.invalidParse("Could not parse expire time")
+		//If expireydate for access token has passed, a new request is created and sent to obtain new access token and expire time
+		if Date() > expireyDate! {
+			let api = RedditHandler()
+			if let response = api.getRedditResponse(request: api.getAccessTokenRequest(grantType: "refresh_token", grantLogic: "refresh_token=\(self.refreshToken)")) {
+				authenticationData = response.jsonReturnedData
+				
+				if response.httpResponseCode == 200 {
+					accessToken = authenticationData["access_token"] as! String
+					expireyDate = Date().addingTimeInterval(TimeInterval(authenticationData["expires_in"] as! Int))
+				}
+				
 			}
 		}
+		super.init(userData: packagedData["userData"] as! [String:Any], postsData: nil)
 		
-		guard let response = api.getRedditResponse(urlSuffix: "/user/\(name)/about.json"), let postsResponse = api.getRedditResponse(urlSuffix: "/user/\(name).json") else {
-			throw UserError.invalidResponse()
-		}
-		
-		do {
-			try super.init(aboutResponse: response, postsResponse: postsResponse)
-			print("Authenticated User successfully created")
-		}
-		catch {
-			throw error
-		}
 	}
 	
-	
-	
-	func packageDataforFutureCreation() -> [String:Any] {
+	/**
+	Creates dictionary of data needed to restore object
+	- Returns: Dictionary
+	*/
+	private func packageDataforFutureCreation() -> [String:Any] {
 		var packagedData = [String:Any]()
 		
 		packagedData["username"] = name!
 		packagedData["authenticationData"] = authenticationData
+		packagedData["accessToken"] = accessToken
+		packagedData["userData"] = data
 		packagedData["expireDate"] = expireyDate
 		
 		return packagedData
@@ -188,4 +165,10 @@ class AuthenticatedUser: RedditUser {
 		return request
 	}
 	
+	/**
+	Encode object with persistent storage
+	*/
+	func encode(with aCoder: NSCoder) {
+		aCoder.encode(packageDataforFutureCreation(), forKey: "packagedContents")
+	}
 }

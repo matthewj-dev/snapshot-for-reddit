@@ -699,12 +699,81 @@ class RedditHandler {
 			do {
 				authenticationData = authResponse.data
 				try super.init(aboutResponse: response, postsResponse: postsResponse)
-				print("WE DID IT!")
+				print("Authenticated User successfully created")
 			}
 			catch {
 				throw error
 			}
+		}
+		
+		init(packagedData: [String:Any]) throws {
+			guard let name = packagedData["username"] as? String, let refreshToken = packagedData["refreshToken"] as? String, let authenticationData = packagedData["authenticationData"] as? [String:Any] else {
+				throw UserError.invalidParse("Error parsing one of many")
+			}
+			self.authenticationData = authenticationData
+			self.refreshToken = refreshToken
 			
+			var request = URLRequest(url: URL(string: "https://www.reddit.com/api/v1/access_token")!)
+			// make the request POST
+			request.httpMethod = "POST"
+			
+			// fill the request body with the auth code from the callback
+			request.httpBody = "grant_type=refresh_token&refresh_token=\(refreshToken)".data(using: .utf8)
+			
+			// add developer code to HTTP header
+			let authorizationString = "udgVMzpax63hJQ:".data(using: .utf8)?.base64EncodedString()
+			request.addValue("Basic \(authorizationString!)", forHTTPHeaderField: "Authorization")
+			
+			guard let authResponse = RedditHandler().getRedditResponse(request: request) else {
+				print("AuthResponse failure")
+				throw UserError.invalidResponse()
+			}
+			
+			guard let authToken = authResponse.data["access_token"] as? String else {
+				print("Token parse failure")
+				throw UserError.invalidParse("Token is invalid")
+			}
+			
+			accessToken = authToken
+			
+			if let deadTime = authResponse.data["expires_in"] as? Int {
+				expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
+			}
+			else {
+				print("Date Update failure")
+				throw UserError.invalidParse("Could not parse expire time")
+			}
+			
+			let userURLString = "https://www.reddit.com/user/\(name)/about.json"
+			let postsURLString = "https://www.reddit.com/user/\(name).json"
+			
+			guard let url = URL(string: userURLString), let postsURL = URL(string: postsURLString) else {
+				throw UserError.invalidURLs()
+			}
+			
+			guard let response = RedditHandler().getRedditResponse(url: url), let postsResponse = RedditHandler().getRedditResponse(url: postsURL) else {
+				throw UserError.invalidResponse()
+			}
+			
+			do {
+				try super.init(aboutResponse: response, postsResponse: postsResponse)
+				print("Authenticated User successfully created")
+			}
+			catch {
+				throw error
+			}
+		}
+		
+		
+		
+		func packageDataforFutureCreation() -> [String:Any] {
+			var packagedData = [String:Any]()
+			
+			packagedData["username"] = name!
+			packagedData["refreshToken"] = refreshToken
+			packagedData["authenticationData"] = authenticationData
+			
+			return packagedData
 		}
 		
 		/**

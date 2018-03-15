@@ -129,7 +129,7 @@
         <!--User view-->
         <scene sceneID="3a5-EY-obx">
             <objects>
-                <viewController title="User view" id="bc3-2f-1x7" sceneMemberID="viewController">
+                <viewController title="User view" id="bc3-2f-1x7" customClass="UserViewController" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="o64-nR-H38">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

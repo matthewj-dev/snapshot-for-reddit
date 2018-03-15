@@ -16,12 +16,22 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     var redditAPI = RedditHandler()
     var subreddit : RedditHandler.Subreddit!
+    var settings = UserDefaults.standard
+    var ncCenter = NotificationCenter.default
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+        ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init("userLogin"), object: nil)
+        
         self.navigationController?.navigationBar.prefersLargeTitles = true
+        
+        if let package = settings.object(forKey: "userData") as? [String:Any] {
+            if let authUser = redditAPI.getAuthenticatedUser(packagedData: package) {
+                redditAPI.authenticatedUser = authUser
+            }
+        }
         
         postCollection.delegate = self
         postCollection.dataSource = self
@@ -69,12 +79,29 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let sub = redditAPI.getSubreddit(Subreddit: "aww", count: 100, id: nil, type: .normal){
+        if let sub = redditAPI.getSubreddit(Subreddit: "", count: 100, id: nil, type: .normal){
             subreddit = sub
-            self.navigationItem.title = subreddit.name
+            
+            if subreddit.name.isEmpty {
+                self.navigationItem.title = "Home"
+            }
+            else {
+                self.navigationItem.title = subreddit.name
+            }
+            
             return subreddit.postCount
         }
         return 0
+    }
+    
+    @objc func userLoggedInReload() {
+        
+        if let package = settings.object(forKey: "userData") as? [String:Any] {
+            if let authUser = redditAPI.getAuthenticatedUser(packagedData: package) {
+                redditAPI.authenticatedUser = authUser
+            }
+        }
+     postCollection.reloadData()
     }
 
 

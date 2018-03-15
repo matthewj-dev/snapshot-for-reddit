@@ -15,7 +15,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     let testNums = Array(repeating: "DOGGO", count: 200)
     
     var redditAPI = RedditHandler()
-    var subreddit : RedditHandler.Subreddit!
+    var subreddit: Subreddit!
     var settings = UserDefaults.standard
     var ncCenter = NotificationCenter.default
     
@@ -73,14 +73,12 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             }
 
         }
-        
-        
         return postCell
         
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let sub = redditAPI.getSubreddit(Subreddit: "", count: 100, id: nil, type: .normal){
+        if let sub = redditAPI.getSubreddit(Subreddit: "Home", count: 100, id: nil, type: .normal){
             subreddit = sub
             
             if subreddit.name.isEmpty {

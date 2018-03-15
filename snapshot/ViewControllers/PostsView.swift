@@ -22,7 +22,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-		
+        
         ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init("userLogin"), object: nil)
         
         self.navigationController?.navigationBar.prefersLargeTitles = true

@@ -24,6 +24,8 @@ class UserViewController: UIViewController {
                 // pass url from Safari to auth user
                 if let newAuthUser = self.redditAPI.getAuthenticatedUser(authCode: url!.absoluteString.components(separatedBy: "code=")[1]){
                     self.redditAPI.authenticatedUser = newAuthUser
+                    self.navigationItem.title = self.redditAPI.authenticatedUser?.name
+                    self.tabBarController!.tabBar.items![1].title = self.redditAPI.authenticatedUser?.name
                     self.settings.set(newAuthUser.packageDataforFutureCreation(), forKey: "userData")
                     self.ncCenter.post(Notification(name: Notification.Name.init("userLogin")))
                 }
@@ -36,6 +38,8 @@ class UserViewController: UIViewController {
         if let package = settings.object(forKey: "userData") as? [String:Any] {
             if let authUser = redditAPI.getAuthenticatedUser(packagedData: package) {
                 redditAPI.authenticatedUser = authUser
+                self.navigationItem.title = self.redditAPI.authenticatedUser?.name
+                self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
                 return
             }
         }

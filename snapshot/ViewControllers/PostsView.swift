@@ -30,6 +30,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         if let package = settings.object(forKey: "userData") as? [String:Any] {
             if let authUser = redditAPI.getAuthenticatedUser(packagedData: package) {
                 redditAPI.authenticatedUser = authUser
+                self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
             }
         }
         

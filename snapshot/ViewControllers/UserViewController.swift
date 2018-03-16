@@ -24,6 +24,7 @@ class UserViewController: UIViewController {
 		saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
 		print(saveURL)
 		
+		//Creates the Safari Authentication view with authorization view 
         loginWindow = SFAuthenticationSession(url: URL(string: "https://www.reddit.com/api/v1/authorize.compact?client_id=udgVMzpax63hJQ&response_type=code&duration=permanent&state=ThisIsATestState&redirect_uri=snapshot://response&scope=identity%20edit%20mysubreddits%20read")!, callbackURLScheme: "snapshot", completionHandler: {url, error in
             if url != nil && url!.absoluteString.contains("code=") {
                 
@@ -32,6 +33,7 @@ class UserViewController: UIViewController {
                     self.redditAPI.authenticatedUser = newAuthUser
                     self.navigationItem.title = self.redditAPI.authenticatedUser?.name
                     self.tabBarController!.tabBar.items![1].title = self.redditAPI.authenticatedUser?.name
+					
                     NSKeyedArchiver.archiveRootObject(newAuthUser, toFile: self.saveURL)
                     self.ncCenter.post(Notification(name: Notification.Name.init("userLogin")))
                 }
@@ -45,6 +47,8 @@ class UserViewController: UIViewController {
 			redditAPI.authenticatedUser = authUser
 			self.navigationItem.title = self.redditAPI.authenticatedUser?.name
 			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+			
+			NSKeyedArchiver.archiveRootObject(authUser, toFile: self.saveURL)
 			return
 		}
 		

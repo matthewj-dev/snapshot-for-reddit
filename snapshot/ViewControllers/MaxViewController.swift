@@ -21,42 +21,51 @@ class MaxViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        if var image = subreddit[index]?.preview {
-            imageToLoad = image
-        }
+		if let image = subreddit[index]?.preview {
+			imageToLoad = image
+			
+			//Switches URL to load if it is of certain types
+			if let contentURL = subreddit[index]?.content, ["png","jpg"].contains(contentURL.pathExtension) {
+				print(contentURL.pathExtension)
+				imageToLoad = contentURL
+			}
+		}
         else {
             return
         }
-
+		
         DispatchQueue.global().async {
             do{
                 let imageData = try Data(contentsOf: self.imageToLoad)
                 DispatchQueue.main.sync {
+					
                     self.maxView.image = UIImage(data: imageData)
+					if self.imageToLoad.pathExtension == "gif" {
+						self.maxView.startAnimating()
+					}
                 }
             }
             catch{
-                print("No u")
+                print("Image loading has failed")
             }
         }
-        
-        let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
-        
+		
+		//Creates gesture to dismiss view
+		let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
+		
+		//Creates gesture to change image when swiping left
+		let swippyLeft = UISwipeGestureRecognizer(target: self, action: #selector(changeImageLeft))
+		swippyLeft.direction = .left
+		
+		//Creates gesture to change image when swiping right
+		let swippyRight = UISwipeGestureRecognizer(target: self, action: #selector(changeImageRight))
+		swippyRight.direction = .right
+		
+		//Adds gestures to the image and views
+		self.view.addGestureRecognizer(tappy)
         maxView.addGestureRecognizer(tappy)
-        
-        let swippyLeft = UISwipeGestureRecognizer(target: self, action: #selector(changeImageLeft))
-        
-        swippyLeft.direction = .left
-        
-        maxView.addGestureRecognizer(swippyLeft)
-        
-        let swippyRight = UISwipeGestureRecognizer(target: self, action: #selector(changeImageRight))
-        
-        swippyRight.direction = .right
-        
         maxView.addGestureRecognizer(swippyRight)
-        
+        maxView.addGestureRecognizer(swippyLeft)
     }
     
     @objc func dismissView() {

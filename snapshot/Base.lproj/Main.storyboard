@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BVL-O6-ECt">
-    <device id="retina5_5" orientation="portrait">
+    <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -14,13 +14,13 @@
         <!--Posts View-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="PostsView" title="Navigation View" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" userLabel="Posts View" customClass="PostsView" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PostsView" title="Navigation View" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" userLabel="Posts View" customClass="PostsView" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="y2J-Dp-K2v">
-                                <rect key="frame" x="0.0" y="64" width="414" height="623"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="724"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6Si-F6-H5j">
                                     <size key="itemSize" width="182" height="136"/>
@@ -73,7 +73,7 @@
                         <constraints>
                             <constraint firstItem="y2J-Dp-K2v" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="J6r-2u-AU3"/>
                             <constraint firstItem="y2J-Dp-K2v" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="NSP-JC-E91"/>
-                            <constraint firstItem="y2J-Dp-K2v" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="gF1-0F-qNn"/>
+                            <constraint firstItem="y2J-Dp-K2v" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="83" id="gF1-0F-qNn"/>
                             <constraint firstItem="y2J-Dp-K2v" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="nKy-zX-esu"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -92,19 +92,20 @@
             <objects>
                 <viewController storyboardIdentifier="MaxImageController" title="MaxImageController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="xEU-fS-sp1" customClass="MaxViewController" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3XG-cn-XJF">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ppw-Dw-3DY">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.75" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="734"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                         </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.74975920376712324" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="ppw-Dw-3DY" firstAttribute="leading" secondItem="3XG-cn-XJF" secondAttribute="leading" id="Fy8-V6-eCk"/>
                             <constraint firstAttribute="trailing" secondItem="ppw-Dw-3DY" secondAttribute="trailing" id="V4p-mg-Ng4"/>
-                            <constraint firstItem="ppw-Dw-3DY" firstAttribute="top" secondItem="3XG-cn-XJF" secondAttribute="top" id="pY3-ah-GNL"/>
-                            <constraint firstAttribute="bottom" secondItem="ppw-Dw-3DY" secondAttribute="bottom" id="zcr-RD-MSq"/>
+                            <constraint firstItem="ppw-Dw-3DY" firstAttribute="top" secondItem="3XG-cn-XJF" secondAttribute="top" constant="44" id="pY3-ah-GNL"/>
+                            <constraint firstAttribute="bottom" secondItem="ppw-Dw-3DY" secondAttribute="bottom" constant="34" id="zcr-RD-MSq"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="YNv-j2-ZVc"/>
                     </view>
@@ -114,7 +115,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eqc-5x-LA7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1672" y="-1689"/>
+            <point key="canvasLocation" x="1671.2" y="-1689.1625615763548"/>
         </scene>
         <!--Posts-->
         <scene sceneID="egU-N5-dQV">
@@ -123,7 +124,7 @@
                     <tabBarItem key="tabBarItem" title="Posts" id="EMe-UY-XG9"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="cJb-8T-edp">
-                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -161,7 +162,7 @@
             <objects>
                 <viewController title="User view" id="bc3-2f-1x7" customClass="UserViewController" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="o64-nR-H38">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="4rO-Ev-Lc2"/>
@@ -179,7 +180,7 @@
                     <tabBarItem key="tabBarItem" title="User" id="iDh-2U-0aK"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NIg-dP-h3J">
-                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -196,7 +197,7 @@
             <objects>
                 <viewController title="Settings View" id="ALa-zi-XGG" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="PuP-mm-YbJ">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="nMs-3b-q77"/>
@@ -214,7 +215,7 @@
                     <tabBarItem key="tabBarItem" title="Settings" id="OOW-y7-rWh"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="04o-1c-DDC">
-                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

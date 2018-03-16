@@ -34,8 +34,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
         if let deadTime = authResponse.jsonReturnedData["expires_in"] as? Int {
             expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
         }
-        
-        
+		
         guard let authToken = authResponse.jsonReturnedData["access_token"] as? String, let refreshToken = authResponse.jsonReturnedData["refresh_token"] as? String else {
             throw UserError.invalidParse("User token not available")
         }
@@ -75,11 +74,12 @@ class AuthenticatedUser: RedditUser, NSCoding {
         
         authenticationData = packagedData["authenticationData"] as! [String:Any]
         accessToken = authenticationData["access_token"] as! String
-        refreshToken = authenticationData["refresh_token"] as! String
+        refreshToken = packagedData["refreshToken"] as! String
         expireyDate = (packagedData["expireDate"] as! Date)
         
         //If expireydate for access token has passed, a new request is created and sent to obtain new access token and expire time
         if Date() > expireyDate! {
+			print("Token expired, retrieving new.")
             let api = RedditHandler()
             if let response = api.getRedditResponse(request: api.getAccessTokenRequest(grantType: "refresh_token", grantLogic: "refresh_token=\(self.refreshToken)")) {
                 authenticationData = response.jsonReturnedData
@@ -92,7 +92,6 @@ class AuthenticatedUser: RedditUser, NSCoding {
             }
         }
         super.init(userData: packagedData["userData"] as! [String:Any], postsData: nil)
-        
     }
     
     /**
@@ -107,6 +106,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
         packagedData["accessToken"] = accessToken
         packagedData["userData"] = data
         packagedData["expireDate"] = expireyDate
+		packagedData["refreshToken"] = refreshToken
         
         return packagedData
     }
@@ -141,6 +141,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
         }
         
         print("Token refresh complete")
+		saveUserToFile()
         return true
     }
     
@@ -149,6 +150,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
     - Returns: Bool on state of if key has expired
     */
     func tokenIsExpired() -> Bool {
+		print("Token is expired")
         return Date() > expireyDate!
     }
     
@@ -171,4 +173,12 @@ class AuthenticatedUser: RedditUser, NSCoding {
     func encode(with aCoder: NSCoder) {
         aCoder.encode(packageDataforFutureCreation(), forKey: "packagedContents")
     }
+	
+	/**
+	Saves AuthenticatedUser to file
+	*/
+	func saveUserToFile() {
+		let saveLocation = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
+		NSKeyedArchiver.archiveRootObject(self, toFile: saveLocation)
+	}
 }

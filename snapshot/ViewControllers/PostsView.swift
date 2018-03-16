@@ -26,7 +26,9 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     override func loadView() {
         super.loadView()
-        
+        saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
+		
+		self.navigationController?.navigationBar.prefersLargeTitles = true
         if let sub = redditAPI.getSubreddit(Subreddit: "", count: 100, id: nil, type: .normal){
             subreddit = sub
             
@@ -39,30 +41,30 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             
             itemCount = subreddit.postCount
         }
-        
+		
+		
     }
 	
 	//Called when view has finished loading but not yet appeared on screen
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        
-		saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
-        
+		
+		//Notification for when the user has logged in
         ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init("userLogin"), object: nil)
+		
+		//Notification for when the user dismisses the full screen image viewer
+        ncCenter.addObserver(self, selector: #selector(bringBackTab), name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
+		
+		
         
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+		postCollection.delegate = self
+		postCollection.dataSource = self
         
 		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
 			redditAPI.authenticatedUser = authUser
-			self.navigationItem.title = self.redditAPI.authenticatedUser?.name
 			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+			NSKeyedArchiver.archiveRootObject(authUser, toFile: self.saveURL)
 		}
-        
-        postCollection.delegate = self
-        postCollection.dataSource = self
-        
-        ncCenter.addObserver(self, selector: #selector(bringBackTab), name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
         
     }
     

@@ -60,7 +60,7 @@ class RedditHandler {
                 catch {
                     print(error)
                 }
-            }
+            } 
             else {
 				print(error!)
             }

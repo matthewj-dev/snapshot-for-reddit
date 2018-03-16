@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		341DBCCF205A0D6F00287917 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341DBCCE205A0D6F00287917 /* UserViewController.swift */; };
+		3447EC7E205B289F00D88926 /* MaxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3447EC7D205B289F00D88926 /* MaxViewController.swift */; };
 		3476B71F205760CD000704B0 /* RedditHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476B71E205760CC000704B0 /* RedditHandler.swift */; };
 		34960FA32057171A00977A53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34960FA22057171A00977A53 /* AppDelegate.swift */; };
 		34960FA52057171A00977A53 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34960FA42057171A00977A53 /* PostsView.swift */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		341DBCCE205A0D6F00287917 /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
+		3447EC7D205B289F00D88926 /* MaxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxViewController.swift; sourceTree = "<group>"; };
 		3476B71E205760CC000704B0 /* RedditHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedditHandler.swift; sourceTree = "<group>"; };
 		34960F9F2057171A00977A53 /* snapshot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = snapshot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34960FA22057171A00977A53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				34960FA42057171A00977A53 /* PostsView.swift */,
 				34960FB92057208A00977A53 /* PostsViewCell.swift */,
 				341DBCCE205A0D6F00287917 /* UserViewController.swift */,
+				3447EC7D205B289F00D88926 /* MaxViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -194,6 +197,7 @@
 				5A64D57A205A46E10077F635 /* AuthenticatedUser.swift in Sources */,
 				341DBCCF205A0D6F00287917 /* UserViewController.swift in Sources */,
 				34960FA52057171A00977A53 /* PostsView.swift in Sources */,
+				3447EC7E205B289F00D88926 /* MaxViewController.swift in Sources */,
 				5A64D576205A46810077F635 /* RedditPost.swift in Sources */,
 				3476B71F205760CD000704B0 /* RedditHandler.swift in Sources */,
 				34960FBA2057208A00977A53 /* PostsViewCell.swift in Sources */,
@@ -335,7 +339,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5PAKG7TRL3;
+				DEVELOPMENT_TEAM = PH5FB4GG2Y;
 				INFOPLIST_FILE = snapshot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;
@@ -350,7 +354,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5PAKG7TRL3;
+				DEVELOPMENT_TEAM = PH5FB4GG2Y;
 				INFOPLIST_FILE = snapshot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;

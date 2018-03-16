@@ -35,7 +35,7 @@ public class Subreddit {
 			if let postData = response.parsedChildData(index: i) {
 				let post = RedditPost(postData: postData)
 				
-				if (type == .image && post.thumbnail != nil) || type == .normal {
+				if (type == .image && post.thumbnail != nil && !post.isSelfPost) || type == .normal {
 					posts.append(post)
 				}
 				

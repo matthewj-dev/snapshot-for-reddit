@@ -184,7 +184,7 @@ class RedditHandler {
             guard let response = getRedditResponse(urlSuffix: suffix) else {
                 return nil
             }
-            return try Subreddit(response: response, name: name)
+            return try Subreddit(response: response, name: name, type: type)
         }
         catch {
             print(error)

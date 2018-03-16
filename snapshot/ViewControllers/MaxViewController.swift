@@ -11,19 +11,21 @@ import UIKit
 class MaxViewController: UIViewController {
 
     @IBOutlet var maxView: UIImageView!
-    
+    @IBOutlet weak var postTitle: UILabel!
+	
     var ncObject = NotificationCenter.default
     
     var imageToLoad: URL!
     var subreddit: Subreddit!
     var index = 0
-    
+	
+	
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
 		if let image = subreddit[index]?.preview {
 			imageToLoad = image
-			
+			postTitle.text = subreddit[index]?.title
 			//Switches URL to load if it is of certain types
 			if let contentURL = subreddit[index]?.content, ["png","jpg"].contains(contentURL.pathExtension) {
 				print(contentURL.pathExtension)

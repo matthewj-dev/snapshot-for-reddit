@@ -20,16 +20,20 @@ public class Subreddit {
 	var name: String
 	let type: SubredditType
 	let bannerURL: URL?
+	let api: RedditHandler
 	
 	/**
+	- Parameter api: RedditHandler that will be used for future requests
 	- Parameter response: Response from Reddit API
 	- Parameter type: Type of subreddit to create
+	- Parameter isReloadSub: Variable used to determine whether this sub will be used just to get additional posts for another
 	
 	- throws: If the subreddit is invalid or there is an issue parsing
 	*/
-	init(response: RedditResponse, name: String = "", type: SubredditType = .normal) throws {
+	init(api: RedditHandler, response: RedditResponse, name: String = "", type: SubredditType = .normal, isReloadSub: Bool = false) throws {
 		self.type = type
 		self.name = name
+		self.api = api
 		
 		for i in 0..<response.childrenDataCount {
 			if let postData = response.parsedChildData(index: i) {
@@ -43,15 +47,18 @@ public class Subreddit {
 		}
 		
 		// Gets banner URL if subreddit name is not nil
-		if !name.isEmpty {
+		if !name.isEmpty && !isReloadSub {
 			
-			if let tempResponse = RedditHandler().getRedditResponse(urlSuffix: "/r/\(name)/about.json"){
+			if let tempResponse = api.getRedditResponse(urlSuffix: "/r/\(name)/about.json"){
 				
-				if let banner = tempResponse.jsonReturnedData["banner_img"] as? String {
-					bannerURL = URL(string: banner)!
+				if let parsedData = tempResponse.parsedData, let banner = parsedData["banner_img"] as? String {
+					bannerURL = URL(string: banner)
 				}
 				else {
 					bannerURL = nil
+				}
+				if let parsedData = tempResponse.parsedData, let newName = parsedData["title"] as? String {
+					self.name = newName
 				}
 			}
 			else {
@@ -94,13 +101,13 @@ public class Subreddit {
 		
 		if let id = self[postCount - 1]?.id {
 			if count == nil {
-				if let tempSub = RedditHandler().getSubreddit(Subreddit: name, id: id, type: type) {
+				if let tempSub = api.getSubreddit(Subreddit: name, id: id, type: type, isReloadSub: true) {
 					self.posts.append(contentsOf: tempSub.posts)
 				}
 				
 			}
 			else {
-				if let tempSub = RedditHandler().getSubreddit(Subreddit: name, count: count!, id: id, type: type) {
+				if let tempSub = api.getSubreddit(Subreddit: name, count: count!, id: id, type: type, isReloadSub: true) {
 					self.posts.append(contentsOf: tempSub.posts)
 				}
 			}

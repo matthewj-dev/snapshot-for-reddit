@@ -21,14 +21,14 @@ class RedditUser: NSObject {
 	- aboutResponse: RedditResponse of users about page
 	- postsResponse: RedditResponse of users main page
 	*/
-	init(aboutResponse: RedditResponse, postsResponse: RedditResponse) throws {
+	init(api: RedditHandler, aboutResponse: RedditResponse, postsResponse: RedditResponse) throws {
 		guard let userData = aboutResponse.parsedData else {
 			throw UserError.invalidParse("Unable to parse some user data")
 		}
 		data = userData
 		
 		do {
-			let tempSub = try Subreddit(response: postsResponse)
+			let tempSub = try Subreddit(api: api, response: postsResponse)
 			posts = tempSub.posts
 		}
 		catch {

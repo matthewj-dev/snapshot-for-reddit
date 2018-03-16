@@ -11,8 +11,6 @@ import UIKit
 class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet weak var postCollection: UICollectionView!
-    
-    let testNums = Array(repeating: "DOGGO", count: 200)
 	
 	var ncCenter = NotificationCenter.default
 	let manager = FileManager.default
@@ -28,8 +26,14 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         super.loadView()
         saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
 		
+		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
+			redditAPI.authenticatedUser = authUser
+			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+			authUser.saveUserToFile()
+		}
+		
 		self.navigationController?.navigationBar.prefersLargeTitles = true
-        if let sub = redditAPI.getSubreddit(Subreddit: "", count: 100, id: nil, type: .normal){
+        if let sub = redditAPI.getSubreddit(Subreddit: "apple", count: 100, id: nil, type: .image){
             subreddit = sub
             
             if subreddit.name.isEmpty {
@@ -42,7 +46,6 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             itemCount = subreddit.postCount
         }
 		
-		
     }
 	
 	//Called when view has finished loading but not yet appeared on screen
@@ -50,7 +53,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         super.viewDidLoad()
 		
 		//Notification for when the user has logged in
-        ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init("userLogin"), object: nil)
+		ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
 		
 		//Notification for when the user dismisses the full screen image viewer
         ncCenter.addObserver(self, selector: #selector(bringBackTab), name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
@@ -59,12 +62,6 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
 		postCollection.delegate = self
 		postCollection.dataSource = self
-        
-		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-			redditAPI.authenticatedUser = authUser
-			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-			NSKeyedArchiver.archiveRootObject(authUser, toFile: self.saveURL)
-		}
         
     }
     
@@ -120,7 +117,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
      called when an image is tapped
     */
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        var newView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MaxImageController") as! MaxViewController
+        let newView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MaxImageController") as! MaxViewController
         
         newView.subreddit = subreddit
         
@@ -136,8 +133,8 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
     }
 	
+	
     var isUpdating = false
-    
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if !isUpdating && indexPath.row > postCollection.numberOfItems(inSection: 0) - 20 {
             isUpdating = true
@@ -167,8 +164,10 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
 			redditAPI.authenticatedUser = authUser
 		}
-		
-     postCollection.reloadData()
+	
+		subreddit = redditAPI.getSubreddit(Subreddit: subreddit.name, count: 100, id: nil, type: .image)
+		itemCount = subreddit.postCount
+     	postCollection.reloadData()
     }
     
     @objc func bringBackTab() {

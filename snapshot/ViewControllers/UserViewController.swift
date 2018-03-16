@@ -34,8 +34,8 @@ class UserViewController: UIViewController {
                     self.navigationItem.title = self.redditAPI.authenticatedUser?.name
                     self.tabBarController!.tabBar.items![1].title = self.redditAPI.authenticatedUser?.name
 					
-                    NSKeyedArchiver.archiveRootObject(newAuthUser, toFile: self.saveURL)
-                    self.ncCenter.post(Notification(name: Notification.Name.init("userLogin")))
+                    newAuthUser.saveUserToFile()
+					self.ncCenter.post(Notification(name: Notification.Name.init(rawValue: "userLogin")))
                 }
                 
             }
@@ -48,7 +48,7 @@ class UserViewController: UIViewController {
 			self.navigationItem.title = self.redditAPI.authenticatedUser?.name
 			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
 			
-			NSKeyedArchiver.archiveRootObject(authUser, toFile: self.saveURL)
+			authUser.saveUserToFile()
 			return
 		}
 		

@@ -12,12 +12,7 @@ import Foundation
 Authenticated User that extends from RedditUser. Has access token management functions.
 */
 class AuthenticatedUser: RedditUser, NSCoding {
-    
-    
-
-    
-    
-    
+	
     var accessToken: String
     var refreshToken: String
     var authenticationData: Dictionary<String, Any>
@@ -26,7 +21,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
     /**
     - Parameter authResponse: RedditResponse object that contains authorization data
     */
-    init(authResponse: RedditResponse) throws {
+	init(api: RedditHandler, authResponse: RedditResponse) throws {
         
         let api = RedditHandler()
         var request = URLRequest(url: URL(string: "https://oauth.reddit.com/api/v1/me")!)
@@ -58,7 +53,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
         
         do {
             authenticationData = authResponse.jsonReturnedData
-            try super.init(aboutResponse: response, postsResponse: postsResponse)
+			try super.init(api: api, aboutResponse: response, postsResponse: postsResponse)
             print("Authenticated User successfully created")
         }
         catch {
@@ -150,7 +145,6 @@ class AuthenticatedUser: RedditUser, NSCoding {
     - Returns: Bool on state of if key has expired
     */
     func tokenIsExpired() -> Bool {
-		print("Token is expired")
         return Date() > expireyDate!
     }
     
@@ -166,6 +160,26 @@ class AuthenticatedUser: RedditUser, NSCoding {
         
         return request
     }
+	
+	/**
+	Creates an array of user subscribed subreddits
+	- Parameter api: Reddit Handler to handle the request
+	- Returns: String Array of Subscribed subreddit capitalized and sorted
+	*/
+	func getSubscribedSubreddits(api: RedditHandler) -> [String] {
+		var toReturn = [String]()
+		
+		if let request = api.getRedditResponse(urlSuffix: "/subreddits/mine/subscriber.json"), request.childrenData != nil {
+			for i in 0..<request.childrenDataCount {
+				if let subName = request.parsedChildData(index: i)!["display_name_prefixed"] as? String {
+					toReturn.append(subName.components(separatedBy: "r/")[1].capitalized)
+					
+				}
+			}
+		}
+		toReturn.sort()
+		return toReturn
+	}
     
     /**
     Encode object with persistent storage

@@ -77,7 +77,7 @@ class RedditHandler {
         print("Group Exited")
         if authData != nil {
             do {
-				let authUser = try AuthenticatedUser(authResponse: RedditResponse(jsonReturnData: authData!, httpResponseCode: responseCode))
+				let authUser = try AuthenticatedUser(api: self, authResponse: RedditResponse(jsonReturnData: authData!, httpResponseCode: responseCode))
                 return authUser
             }
             catch {
@@ -160,7 +160,7 @@ class RedditHandler {
      
      - Returns: Subreddit
      */
-    func getSubreddit(Subreddit name:String, count: Int = 25 ,id: String? = nil, type: Subreddit.SubredditType = .normal) -> Subreddit? {
+    func getSubreddit(Subreddit name:String, count: Int = 25 ,id: String? = nil, type: Subreddit.SubredditType = .normal, isReloadSub: Bool = false) -> Subreddit? {
         let suffix: String
         
         if name.isEmpty {
@@ -184,7 +184,7 @@ class RedditHandler {
             guard let response = getRedditResponse(urlSuffix: suffix) else {
                 return nil
             }
-            return try Subreddit(response: response, name: name, type: type)
+			return try Subreddit(api: self, response: response, name: name, type: type, isReloadSub: isReloadSub)
         }
         catch {
             print(error)
@@ -220,7 +220,7 @@ class RedditHandler {
             return nil
         }
         do {
-            return try RedditUser.init(aboutResponse: response, postsResponse: postsResponse)
+			return try RedditUser.init(api: self, aboutResponse: response, postsResponse: postsResponse)
         }
         catch {
             print(error)

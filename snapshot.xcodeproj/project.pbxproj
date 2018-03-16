@@ -22,6 +22,7 @@
 		5A64D576205A46810077F635 /* RedditPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A64D575205A46810077F635 /* RedditPost.swift */; };
 		5A64D578205A46AA0077F635 /* RedditUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A64D577205A46AA0077F635 /* RedditUser.swift */; };
 		5A64D57A205A46E10077F635 /* AuthenticatedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A64D579205A46E10077F635 /* AuthenticatedUser.swift */; };
+		5A7F307B205C3C2100A3CAC0 /* NavControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7F307A205C3C2100A3CAC0 /* NavControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		5A64D575205A46810077F635 /* RedditPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedditPost.swift; sourceTree = "<group>"; };
 		5A64D577205A46AA0077F635 /* RedditUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedditUser.swift; sourceTree = "<group>"; };
 		5A64D579205A46E10077F635 /* AuthenticatedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedUser.swift; sourceTree = "<group>"; };
+		5A7F307A205C3C2100A3CAC0 /* NavControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 				34960FB92057208A00977A53 /* PostsViewCell.swift */,
 				341DBCCE205A0D6F00287917 /* UserViewController.swift */,
 				3447EC7D205B289F00D88926 /* MaxViewController.swift */,
+				5A7F307A205C3C2100A3CAC0 /* NavControl.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				3447EC7E205B289F00D88926 /* MaxViewController.swift in Sources */,
 				5A64D576205A46810077F635 /* RedditPost.swift in Sources */,
 				3476B71F205760CD000704B0 /* RedditHandler.swift in Sources */,
+				5A7F307B205C3C2100A3CAC0 /* NavControl.swift in Sources */,
 				34960FBA2057208A00977A53 /* PostsViewCell.swift in Sources */,
 				34960FA32057171A00977A53 /* AppDelegate.swift in Sources */,
 			);

@@ -90,18 +90,60 @@
         <!--SubredditView-->
         <scene sceneID="UuB-qf-S8q">
             <objects>
-                <viewController storyboardIdentifier="SubredditView" title="Subreddit" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Nxh-hq-s3c" userLabel="SubredditView" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SubredditView" title="Subreddit" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Nxh-hq-s3c" userLabel="SubredditView" customClass="SubredditsView" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ilj-hy-ss3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hjT-ml-GNc">
+                                <rect key="frame" x="0.0" y="44" width="375" height="734"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="subredditListCell" rowHeight="60" id="fpI-iF-40T" customClass="RedditListCell" customModule="snapshot" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="60"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="subreddit" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fpI-iF-40T" id="1zF-kG-obt">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="59.666666666666664"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTc-w4-PMU">
+                                                    <rect key="frame" x="15" y="11" width="345" height="38"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="aTc-w4-PMU" secondAttribute="bottom" id="CKV-9g-TOO"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="aTc-w4-PMU" secondAttribute="trailing" id="cGr-7v-mce"/>
+                                                <constraint firstItem="aTc-w4-PMU" firstAttribute="leading" secondItem="1zF-kG-obt" secondAttribute="leadingMargin" id="egR-bX-WWh"/>
+                                                <constraint firstItem="aTc-w4-PMU" firstAttribute="top" secondItem="1zF-kG-obt" secondAttribute="topMargin" id="oF2-06-DG6"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="subredditName" destination="aTc-w4-PMU" id="RaT-iQ-Hg6"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="hjT-ml-GNc" firstAttribute="bottom" secondItem="QIb-MU-uMp" secondAttribute="bottom" id="PHC-wB-sLt"/>
+                            <constraint firstItem="hjT-ml-GNc" firstAttribute="trailing" secondItem="QIb-MU-uMp" secondAttribute="trailing" id="i1v-Ym-xNB"/>
+                            <constraint firstItem="hjT-ml-GNc" firstAttribute="leading" secondItem="QIb-MU-uMp" secondAttribute="leading" id="oif-F3-S1d"/>
+                            <constraint firstItem="hjT-ml-GNc" firstAttribute="top" secondItem="QIb-MU-uMp" secondAttribute="top" id="zhB-vQ-VGB"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="QIb-MU-uMp"/>
                     </view>
                     <navigationItem key="navigationItem" id="2aQ-m0-U8X"/>
+                    <connections>
+                        <outlet property="redditTable" destination="hjT-ml-GNc" id="SEo-IZ-xaT"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0I7-91-fmN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1321" y="-712"/>
+            <point key="canvasLocation" x="1320.8" y="-712.3152709359606"/>
         </scene>
         <!--MaxImageController-->
         <scene sceneID="lJq-pC-Ctd">

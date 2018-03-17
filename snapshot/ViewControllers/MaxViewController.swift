@@ -19,6 +19,26 @@ class MaxViewController: UIViewController {
     var subreddit: Subreddit!
     var index = 0
 	
+	override func loadView() {
+		super.loadView()
+		
+		//Creates gesture to dismiss view
+		let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
+		
+		//Creates gesture to change image when swiping left
+		let swippyLeft = UISwipeGestureRecognizer(target: self, action: #selector(changeImageLeft))
+		swippyLeft.direction = .left
+		
+		//Creates gesture to change image when swiping right
+		let swippyRight = UISwipeGestureRecognizer(target: self, action: #selector(changeImageRight))
+		swippyRight.direction = .right
+		
+		//Adds gestures to the image and views
+		self.view.addGestureRecognizer(tappy)
+		maxView.addGestureRecognizer(tappy)
+		maxView.addGestureRecognizer(swippyRight)
+		maxView.addGestureRecognizer(swippyLeft)
+	}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,23 +71,6 @@ class MaxViewController: UIViewController {
                 print("Image loading has failed")
             }
         }
-		
-		//Creates gesture to dismiss view
-		let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
-		
-		//Creates gesture to change image when swiping left
-		let swippyLeft = UISwipeGestureRecognizer(target: self, action: #selector(changeImageLeft))
-		swippyLeft.direction = .left
-		
-		//Creates gesture to change image when swiping right
-		let swippyRight = UISwipeGestureRecognizer(target: self, action: #selector(changeImageRight))
-		swippyRight.direction = .right
-		
-		//Adds gestures to the image and views
-		self.view.addGestureRecognizer(tappy)
-        maxView.addGestureRecognizer(tappy)
-        maxView.addGestureRecognizer(swippyRight)
-        maxView.addGestureRecognizer(swippyLeft)
     }
     
     @objc func dismissView() {

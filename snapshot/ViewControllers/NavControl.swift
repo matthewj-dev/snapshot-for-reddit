@@ -12,18 +12,16 @@ class NavControl: UINavigationController {
 
 	override func loadView() {
 		super.loadView()
+		
 		let postsView = storyboard?.instantiateViewController(withIdentifier: "PostsView")
 		let subsView = storyboard?.instantiateViewController(withIdentifier: "SubredditView")
 		
 		subsView?.navigationItem.title = "Subreddits"
+		
 		self.viewControllers = [subsView!, postsView!]
 	}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
     }
 }

@@ -12,6 +12,8 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 
     @IBOutlet weak var postCollection: UICollectionView!
 	
+	var subredditToLoad = ""
+	
 	var ncCenter = NotificationCenter.default
 	let manager = FileManager.default
 	
@@ -25,6 +27,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     override func loadView() {
         super.loadView()
         saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
+		self.navigationController?.navigationBar.prefersLargeTitles = true
 		
 		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
 			redditAPI.authenticatedUser = authUser
@@ -32,20 +35,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 			authUser.saveUserToFile()
 		}
 		
-		self.navigationController?.navigationBar.prefersLargeTitles = true
-        if let sub = redditAPI.getSubreddit(Subreddit: "pics", count: 100, id: nil, type: .image){
-            subreddit = sub
-            
-            if subreddit.name.isEmpty {
-                self.navigationItem.title = "Home"
-            }
-            else {
-                self.navigationItem.title = subreddit.name
-            }
-            
-            itemCount = subreddit.postCount
-        }
-		
+		loadSubredditIntoCollectionView()
     }
 	
 	//Called when view has finished loading but not yet appeared on screen
@@ -86,8 +76,6 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         if let preview = post.preview {
             thumbnail = preview
         }
-        
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap))
         
         
         DispatchQueue.global().async {
@@ -154,6 +142,24 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             })
         }
     }
+	
+	func loadSubredditIntoCollectionView() {
+		redditAPI.asyncGetSubreddit(Subreddit: subredditToLoad, count: 100, id: nil, type: .image, completion: {(newSubreddit) in
+			if newSubreddit != nil {
+				self.subreddit = newSubreddit!
+				self.itemCount = self.subreddit.postCount
+				
+				if self.subreddit.name.isEmpty {
+					self.navigationItem.title = "Home"
+				}
+				else {
+					self.navigationItem.title = self.subreddit.name
+				}
+				
+				self.postCollection.reloadData()
+			}
+		})
+	}
     
 	
 	//Function called by Notification Center when notification notifies that a user has logged in
@@ -163,9 +169,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 			redditAPI.authenticatedUser = authUser
 		}
 	
-		subreddit = redditAPI.getSubreddit(Subreddit: subreddit.name, count: 100, id: nil, type: .image)
-		itemCount = subreddit.postCount
-     	postCollection.reloadData()
+		loadSubredditIntoCollectionView()
     }
     
     @objc func bringBackTab() {

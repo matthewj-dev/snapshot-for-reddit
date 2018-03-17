@@ -166,6 +166,15 @@ class AuthenticatedUser: RedditUser, NSCoding {
 		toReturn.sort()
 		return toReturn
 	}
+	
+	func asyncGetSubscribedSubreddits(api: RedditHandler, completition: @escaping ([String])->Void) {
+		DispatchQueue.global().async {
+			let subreddits = self.getSubscribedSubreddits(api: api)
+			DispatchQueue.main.sync {
+				completition(subreddits)
+			}
+		}
+	}
     
     /**
     Encode object with persistent storage

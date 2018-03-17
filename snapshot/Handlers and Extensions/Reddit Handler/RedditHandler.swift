@@ -91,7 +91,6 @@ class RedditHandler {
      Creates a RedditResponse object that is able to be parsed by the Subreddit constructor.
      Will wait until response is returned.
      - Parameter url: URL object to Reddit API to be parsed
-     
      - Returns: RedditResponse object
      */
     func getRedditResponse(request: URLRequest) -> RedditResponse? {

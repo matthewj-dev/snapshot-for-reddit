@@ -18,7 +18,6 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 	let manager = FileManager.default
 	
     var redditAPI = RedditHandler()
-    var settings = UserDefaults.standard
 	
 	var saveURL: String!
     var subreddit: Subreddit!
@@ -48,8 +47,6 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 		//Notification for when the user dismisses the full screen image viewer
         ncCenter.addObserver(self, selector: #selector(bringBackTab), name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
 		
-		
-        
 		postCollection.delegate = self
 		postCollection.dataSource = self
         
@@ -108,11 +105,8 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         let newView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MaxImageController") as! MaxViewController
         
         newView.subreddit = subreddit
-        
         newView.index = indexPath.row
-        
         newView.modalTransitionStyle = .crossDissolve
-        
         newView.modalPresentationStyle = .overCurrentContext
         
         self.tabBarController?.tabBar.isHidden = true
@@ -122,7 +116,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     }
 	
 	//Variable used for detecting whether an update is already taking place
-    var isUpdating = false
+    private var isUpdating = false
 	
 	//Informs the subreddit object to load additional posts with async
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -143,6 +137,9 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         }
     }
 	
+	/**
+	Loads the subreddit through async and then loads the UICollectionView with the posts of that subreddit
+	*/
 	func loadSubredditIntoCollectionView() {
 		redditAPI.asyncGetSubreddit(Subreddit: subredditToLoad, count: 100, id: nil, type: .image, completion: {(newSubreddit) in
 			if newSubreddit != nil {

@@ -167,6 +167,12 @@ class AuthenticatedUser: RedditUser, NSCoding {
 		return toReturn
 	}
 	
+	/**
+	Asyncriously get subscribed subreddits and then performs completion handler with the results
+	- Parameters:
+	 - api: Reddit Handler to handle the request
+	 - completition: Block with [String] parameter of returned array
+	*/
 	func asyncGetSubscribedSubreddits(api: RedditHandler, completition: @escaping ([String])->Void) {
 		DispatchQueue.global().async {
 			let subreddits = self.getSubscribedSubreddits(api: api)

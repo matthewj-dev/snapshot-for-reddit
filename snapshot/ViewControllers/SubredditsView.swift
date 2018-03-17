@@ -28,7 +28,13 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 			
 			authUser.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
 				self.subreddits = subs
-				self.redditTable.reloadData()
+				
+				self.redditTable.beginUpdates()
+				for i in 0..<self.subreddits.count {
+					self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
+				}
+				self.redditTable.endUpdates()
+				
 			})
 			
 		}
@@ -47,6 +53,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		super.viewDidAppear(true)
 	}
 	
+	//Creates a new view based on the cell selected and then pushed onto the navigation controller
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
 		if indexPath.section == 1 {
@@ -58,6 +65,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		self.redditTable.deselectRow(at: indexPath, animated: true)
 	}
 	
+	//Creates and returns each cell of the table
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = redditTable.dequeueReusableCell(withIdentifier: "subredditListCell") as! RedditListCell
 		
@@ -71,6 +79,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		
 	}
 	
+	//Sets the title per header in table
 	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		if section == 0 {
 			return "Reddit"
@@ -81,10 +90,12 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		return ""
 	}
 	
+	//Tells the table the height of the row
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return 25
 	}
 	
+	//Tells the tableview how many rows are in a section
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if section == 0 {
 			return 1
@@ -95,6 +106,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		return 0
 	}
 	
+	//Tells the tableview how many sections the tableview will contain
 	func numberOfSections(in tableView: UITableView) -> Int {
 		return 2
 	}

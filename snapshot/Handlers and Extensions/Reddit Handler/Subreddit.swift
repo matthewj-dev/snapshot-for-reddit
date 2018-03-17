@@ -57,8 +57,8 @@ public class Subreddit {
 				else {
 					bannerURL = nil
 				}
-				if let parsedData = tempResponse.parsedData, let newName = parsedData["title"] as? String {
-					self.name = newName
+				if let parsedData = tempResponse.parsedData, let newName = parsedData["display_name_prefixed"] as? String {
+					self.name = newName.components(separatedBy: "r/")[1].capitalized
 				}
 			}
 			else {
@@ -92,6 +92,9 @@ public class Subreddit {
 		}
 	}
 	
+	//ID from the previously loaded post update. Used to verify a subreddit is not sending additional
+	//requests if not needed in the event a subreddit cannot update further.
+	private var lastLoadedID = ""
 	/**
 	Loads additional posts into the subreddits array of posts
 	- Parameter count: (Optional) Number of new posts to append with
@@ -99,7 +102,7 @@ public class Subreddit {
 	*/
 	func loadAdditionalPosts(count:Int? = nil) -> Bool {
 		
-		if let id = self[postCount - 1]?.id {
+		if let id = self[postCount - 1]?.id, id != lastLoadedID {
 			if count == nil {
 				if let tempSub = api.getSubreddit(Subreddit: name, id: id, type: type, isReloadSub: true) {
 					self.posts.append(contentsOf: tempSub.posts)
@@ -111,7 +114,7 @@ public class Subreddit {
 					self.posts.append(contentsOf: tempSub.posts)
 				}
 			}
-			
+			lastLoadedID = id
 			return true
 		}
 		return false

@@ -137,6 +137,15 @@ class RedditHandler {
      */
     func getRedditResponse(urlSuffix: String) -> RedditResponse? {
         let url: URL
+		var urlSuffix = urlSuffix
+		
+		if urlSuffix.contains("?") {
+			urlSuffix += "&raw_json=1"
+		}
+		else {
+			urlSuffix += "?raw_json=1"
+		}
+		
         if authenticatedUser != nil {
             if !authenticatedUser!.tokenIsExpired() || authenticatedUser!.refreshAccessToken() {
                 url = URL(string: "https://oauth.reddit.com" + urlSuffix)!

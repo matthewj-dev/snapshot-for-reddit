@@ -33,7 +33,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 		}
 		
 		self.navigationController?.navigationBar.prefersLargeTitles = true
-        if let sub = redditAPI.getSubreddit(Subreddit: "apple", count: 100, id: nil, type: .image){
+        if let sub = redditAPI.getSubreddit(Subreddit: "pics", count: 100, id: nil, type: .image){
             subreddit = sub
             
             if subreddit.name.isEmpty {
@@ -133,21 +133,19 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
     }
 	
-	
+	//Variable used for detecting whether an update is already taking place
     var isUpdating = false
+	
+	//Informs the subreddit object to load additional posts with async
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if !isUpdating && indexPath.row > postCollection.numberOfItems(inSection: 0) - 20 {
             isUpdating = true
             subreddit.asyncLoadAdditionalPosts(count: 100, completion: {(didload) in
                 if didload {
-                    var newIndexes = [IndexPath]()
-                    print(self.subreddit.postCount)
-                    for i in self.postCollection.numberOfItems(inSection: 0)..<self.subreddit.postCount {
-                        newIndexes.append(IndexPath(item: i, section: 0))
-                    }
+					let oldItemCount = self.postCollection.numberOfItems(inSection: 0)
                     self.postCollection.performBatchUpdates({
-                        for update in newIndexes {
-                            self.postCollection.insertItems(at:[update])
+                        for i in oldItemCount..<self.subreddit.postCount {
+                            self.postCollection.insertItems(at: [IndexPath(item: i, section: 0)])
                             self.itemCount += 1
                         }
                     }, completion: nil)

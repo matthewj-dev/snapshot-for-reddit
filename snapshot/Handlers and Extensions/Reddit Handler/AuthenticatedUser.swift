@@ -15,50 +15,40 @@ class AuthenticatedUser: RedditUser, NSCoding {
 	
     var accessToken: String
     var refreshToken: String
-    var authenticationData: Dictionary<String, Any>
+	/**
+	Date at which the current access token will expire
+	*/
     var expireyDate: Date?
     
     /**
     - Parameter authResponse: RedditResponse object that contains authorization data
     */
 	init(api: RedditHandler, authResponse: RedditResponse) throws {
-        
-        let api = RedditHandler()
-        var request = URLRequest(url: URL(string: "https://oauth.reddit.com/api/v1/me")!)
-        
+		
         if let deadTime = authResponse.jsonReturnedData["expires_in"] as? Int {
             expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
         }
+		else {
+			throw UserError.invalidParse("Unable to parse date that token will expire")
+		}
 		
         guard let authToken = authResponse.jsonReturnedData["access_token"] as? String, let refreshToken = authResponse.jsonReturnedData["refresh_token"] as? String else {
             throw UserError.invalidParse("User token not available")
         }
         
-        accessToken = authToken
+        self.accessToken = authToken
         self.refreshToken = refreshToken
-        
+		
+        var request = URLRequest(url: URL(string: "https://oauth.reddit.com/api/v1/me")!)
         request.addValue("com.lapis.snapshot:v1.2 (by /u/Pokeh321)", forHTTPHeaderField: "User-Agent")
         request.addValue("bearer \(authToken)", forHTTPHeaderField: "Authorization")
         
-        guard let accessResponse = api.getRedditResponse(request: request) else {
+        guard let userData = api.getRedditResponse(request: request) else {
             throw UserError.invalidResponse()
         }
-        guard let username = accessResponse.jsonReturnedData["name"] as? String else {
-            throw UserError.invalidResponse()
-        }
-        
-        guard let response = api.getRedditResponse(urlSuffix: "/user/\(username)/about.json"), let postsResponse = api.getRedditResponse(urlSuffix: "/user/\(username).json") else {
-            throw UserError.invalidResponse()
-        }
-        
-        do {
-            authenticationData = authResponse.jsonReturnedData
-			try super.init(api: api, aboutResponse: response, postsResponse: postsResponse)
-            print("Authenticated User successfully created")
-        }
-        catch {
-            throw error
-        }
+		super.init(userData: userData.jsonReturnedData, postsData: nil)
+		
+		print("Authenticated User successfully created")
     }
     
     /**
@@ -66,22 +56,19 @@ class AuthenticatedUser: RedditUser, NSCoding {
     */
     required init?(coder aDecoder: NSCoder) {
         let packagedData = aDecoder.decodeObject(forKey: "packagedContents") as! [String:Any]
-        
-        authenticationData = packagedData["authenticationData"] as! [String:Any]
-        accessToken = authenticationData["access_token"] as! String
+		
+        accessToken = packagedData["accessToken"] as! String
         refreshToken = packagedData["refreshToken"] as! String
         expireyDate = (packagedData["expireDate"] as! Date)
-        
-        //If expireydate for access token has passed, a new request is created and sent to obtain new access token and expire time
+		
         if Date() > expireyDate! {
 			print("Token expired, retrieving new.")
             let api = RedditHandler()
             if let response = api.getRedditResponse(request: api.getAccessTokenRequest(grantType: "refresh_token", grantLogic: "refresh_token=\(self.refreshToken)")) {
-                authenticationData = response.jsonReturnedData
-                
+				
                 if response.httpResponseCode == 200 {
-                    accessToken = authenticationData["access_token"] as! String
-                    expireyDate = Date().addingTimeInterval(TimeInterval(authenticationData["expires_in"] as! Int))
+                    accessToken = response.jsonReturnedData["access_token"] as! String
+                    expireyDate = Date().addingTimeInterval(TimeInterval(response.jsonReturnedData["expires_in"] as! Int))
                 }
                 
             }
@@ -97,7 +84,6 @@ class AuthenticatedUser: RedditUser, NSCoding {
         var packagedData = [String:Any]()
         
         packagedData["username"] = name!
-        packagedData["authenticationData"] = authenticationData
         packagedData["accessToken"] = accessToken
         packagedData["userData"] = data
         packagedData["expireDate"] = expireyDate

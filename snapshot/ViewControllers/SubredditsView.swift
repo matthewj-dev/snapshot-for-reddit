@@ -19,25 +19,6 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 	override func loadView() {
 		super.loadView()
 		
-		let saveURL = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
-		
-		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-			redditAPI.authenticatedUser = authUser
-			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-			authUser.saveUserToFile()
-			
-			authUser.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
-				self.subreddits = subs
-				
-				self.redditTable.beginUpdates()
-				for i in 0..<self.subreddits.count {
-					self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
-				}
-				self.redditTable.endUpdates()
-				
-			})
-			
-		}
 		//Notification for when the user has logged in
 		ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
 		
@@ -117,6 +98,25 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
 			redditAPI.authenticatedUser = authUser
 		}
+        
+        if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
+            redditAPI.authenticatedUser = authUser
+            self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+            authUser.saveUserToFile()
+            
+            authUser.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
+                self.subreddits = subs
+                
+                self.redditTable.beginUpdates()
+                for i in 0..<self.subreddits.count {
+                    self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
+                }
+                self.redditTable.endUpdates()
+                
+            })
+            
+        }
+        
 	}
 	
 }

@@ -59,12 +59,20 @@ class MaxViewController: UIViewController {
         DispatchQueue.global().async {
             do{
                 let imageData = try Data(contentsOf: self.imageToLoad)
-                DispatchQueue.main.sync {
-					
-                    self.maxView.image = UIImage(data: imageData)
-					if self.imageToLoad.pathExtension == "gif" {
-						self.maxView.startAnimating()
-					}
+                
+                if self.imageToLoad.pathExtension == "gif"{
+                    let gifToLoad = UIImage.animatedImage(data: imageData)
+                    DispatchQueue.main.sync {
+                        self.maxView.image = gifToLoad
+                        self.maxView.startAnimating()
+                        print(self.imageToLoad.pathExtension)
+                        print(self.maxView.isAnimating)
+                    }
+                }
+                else {
+                    DispatchQueue.main.sync {
+                        self.maxView.image = UIImage(data: imageData)
+                    }
                 }
             }
             catch{
@@ -74,6 +82,7 @@ class MaxViewController: UIViewController {
     }
     
     @objc func dismissView() {
+//        self.maxView.stopAnimating()
         ncObject.post(name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
         self.dismiss(animated: true, completion: nil)
     }

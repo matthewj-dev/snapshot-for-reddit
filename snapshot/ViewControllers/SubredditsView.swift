@@ -18,9 +18,14 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 
 	override func loadView() {
 		super.loadView()
+        
+        let saveURL = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
+        
+        repopulateSubTable(saveURL: saveURL)
 		
 		//Notification for when the user has logged in
 		ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
+        
 		
 		redditTable.delegate = self
 		redditTable.dataSource = self
@@ -91,13 +96,9 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 	func numberOfSections(in tableView: UITableView) -> Int {
 		return 2
 	}
-	
-	//Function called by Notification Center when notification notifies that a user has logged in
-	@objc func userLoggedInReload() {
-		let saveURL = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
-		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-			redditAPI.authenticatedUser = authUser
-		}
+    
+    //repopulates the subreddit table
+    func repopulateSubTable(saveURL: String){
         
         if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
             redditAPI.authenticatedUser = authUser
@@ -116,6 +117,16 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
             })
             
         }
+    }
+	
+	//Function called by Notification Center when notification notifies that a user has logged in
+	@objc func userLoggedInReload() {
+		let saveURL = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
+		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
+			redditAPI.authenticatedUser = authUser
+		}
+        
+        repopulateSubTable(saveURL: saveURL)
         
 	}
 	

@@ -9,6 +9,7 @@
 import UIKit
 
 class ImageCacher {
+	
 	// Dictionary used for caching
 	var cache = [String:UIImage]()
 	
@@ -70,7 +71,7 @@ class ImageCacher {
 	
 }
 
-class ImageCachePair {
+struct ImageCachePair {
 	let key: String
 	let url: URL
 	

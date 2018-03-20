@@ -66,8 +66,6 @@ class MaxViewController: UIViewController {
                     DispatchQueue.main.sync {
                         self.maxView.image = gifToLoad
                         self.maxView.startAnimating()
-                        print(self.imageToLoad.pathExtension)
-                        print(self.maxView.isAnimating)
                     }
                 }
                 else {

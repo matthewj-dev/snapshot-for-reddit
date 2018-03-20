@@ -166,13 +166,13 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.74975920376712324" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="ppw-Dw-3DY" firstAttribute="leading" secondItem="3XG-cn-XJF" secondAttribute="leading" id="Fy8-V6-eCk"/>
+                            <constraint firstItem="ppw-Dw-3DY" firstAttribute="bottom" secondItem="YNv-j2-ZVc" secondAttribute="bottom" id="BGF-9C-W9k"/>
+                            <constraint firstItem="ppw-Dw-3DY" firstAttribute="leading" secondItem="YNv-j2-ZVc" secondAttribute="leading" id="Fxn-aN-OD5"/>
                             <constraint firstItem="RR4-M1-KRW" firstAttribute="leading" secondItem="YNv-j2-ZVc" secondAttribute="leading" constant="16" id="N5M-h9-BxI"/>
-                            <constraint firstAttribute="trailing" secondItem="ppw-Dw-3DY" secondAttribute="trailing" id="V4p-mg-Ng4"/>
+                            <constraint firstItem="ppw-Dw-3DY" firstAttribute="trailing" secondItem="YNv-j2-ZVc" secondAttribute="trailing" id="VKL-Tk-Qkp"/>
                             <constraint firstItem="RR4-M1-KRW" firstAttribute="top" secondItem="YNv-j2-ZVc" secondAttribute="top" id="XZg-0F-OiU"/>
                             <constraint firstItem="YNv-j2-ZVc" firstAttribute="trailing" secondItem="RR4-M1-KRW" secondAttribute="trailing" constant="16" id="l1e-1F-egS"/>
-                            <constraint firstItem="ppw-Dw-3DY" firstAttribute="top" secondItem="3XG-cn-XJF" secondAttribute="top" constant="44" id="pY3-ah-GNL"/>
-                            <constraint firstAttribute="bottom" secondItem="ppw-Dw-3DY" secondAttribute="bottom" constant="34" id="zcr-RD-MSq"/>
+                            <constraint firstItem="ppw-Dw-3DY" firstAttribute="top" secondItem="YNv-j2-ZVc" secondAttribute="top" id="x4U-rb-BkJ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="YNv-j2-ZVc"/>
                     </view>
@@ -189,9 +189,10 @@
         <scene sceneID="egU-N5-dQV">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Txe-6C-52n" customClass="NavControl" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Posts" id="EMe-UY-XG9"/>
+                    <tabBarItem key="tabBarItem" title="Posts" image="Posts" selectedImage="Posts" id="EMe-UY-XG9"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="cJb-8T-edp">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -241,9 +242,10 @@
         <scene sceneID="thz-PT-JGi">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="7MU-Gi-23b" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="User" id="iDh-2U-0aK"/>
+                    <tabBarItem key="tabBarItem" title="User" image="User" id="iDh-2U-0aK"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NIg-dP-h3J">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -275,9 +277,10 @@
         <scene sceneID="je3-NI-sGt">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gT4-mK-f3u" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" id="OOW-y7-rWh"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="settings" id="OOW-y7-rWh"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="04o-1c-DDC">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -290,4 +293,9 @@
             <point key="canvasLocation" x="476" y="681"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Posts" width="25" height="25"/>
+        <image name="User" width="25" height="25"/>
+        <image name="settings" width="25" height="25"/>
+    </resources>
 </document>

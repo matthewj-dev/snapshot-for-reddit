@@ -25,6 +25,7 @@
 		5A7F307B205C3C2100A3CAC0 /* NavControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7F307A205C3C2100A3CAC0 /* NavControl.swift */; };
 		5A7F307D205CA8B400A3CAC0 /* SubredditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7F307C205CA8B400A3CAC0 /* SubredditsView.swift */; };
 		5A7F307F205CAD5000A3CAC0 /* RedditListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7F307E205CAD5000A3CAC0 /* RedditListCell.swift */; };
+		5ACCC37F205E19D70001F685 /* ImageCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCC37E205E19D70001F685 /* ImageCacher.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		5A7F307A205C3C2100A3CAC0 /* NavControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavControl.swift; sourceTree = "<group>"; };
 		5A7F307C205CA8B400A3CAC0 /* SubredditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubredditsView.swift; sourceTree = "<group>"; };
 		5A7F307E205CAD5000A3CAC0 /* RedditListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedditListCell.swift; sourceTree = "<group>"; };
+		5ACCC37E205E19D70001F685 /* ImageCacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacher.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 		34960FB82057189E00977A53 /* Handlers and Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				5ACCC37E205E19D70001F685 /* ImageCacher.swift */,
 				5A4CD659205A2E3200E0ECE0 /* Reddit Handler */,
 			);
 			path = "Handlers and Extensions";
@@ -204,6 +207,7 @@
 				34960FAB2057171A00977A53 /* snapshot.xcdatamodeld in Sources */,
 				5A7F307D205CA8B400A3CAC0 /* SubredditsView.swift in Sources */,
 				5A64D572205A440B0077F635 /* RedditResponse.swift in Sources */,
+				5ACCC37F205E19D70001F685 /* ImageCacher.swift in Sources */,
 				5A64D57A205A46E10077F635 /* AuthenticatedUser.swift in Sources */,
 				341DBCCF205A0D6F00287917 /* UserViewController.swift in Sources */,
 				34960FA52057171A00977A53 /* PostsView.swift in Sources */,
@@ -351,7 +355,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PH5FB4GG2Y;
+				DEVELOPMENT_TEAM = 5PAKG7TRL3;
 				INFOPLIST_FILE = snapshot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;
@@ -366,7 +370,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PH5FB4GG2Y;
+				DEVELOPMENT_TEAM = 5PAKG7TRL3;
 				INFOPLIST_FILE = snapshot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;

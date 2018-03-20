@@ -19,16 +19,13 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 	override func loadView() {
 		super.loadView()
         
-        let saveURL = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
-        
-        repopulateSubTable(saveURL: saveURL)
-		
-		//Notification for when the user has logged in
-		ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
-        
-		
 		redditTable.delegate = self
 		redditTable.dataSource = self
+		
+		//Notification for when the user has logged in
+		ncCenter.addObserver(self, selector: #selector(repopulateSubTable), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
+		
+		repopulateSubTable()
 	}
 	
     override func viewDidLoad() {
@@ -96,38 +93,33 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 	func numberOfSections(in tableView: UITableView) -> Int {
 		return 2
 	}
-    
-    //repopulates the subreddit table
-    func repopulateSubTable(saveURL: String){
-        
-        if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-            redditAPI.authenticatedUser = authUser
-            self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-            authUser.saveUserToFile()
-            
-            authUser.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
-                self.subreddits = subs
-                
-                self.redditTable.beginUpdates()
-                for i in 0..<self.subreddits.count {
-                    self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
-                }
-                self.redditTable.endUpdates()
-                
-            })
-            
-        }
-    }
 	
-	//Function called by Notification Center when notification notifies that a user has logged in
-	@objc func userLoggedInReload() {
+	//repopulates the subreddit table
+	@objc func repopulateSubTable(){
+		
+		//Path to check for userData file
 		let saveURL = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
+		
 		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
 			redditAPI.authenticatedUser = authUser
+			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+			authUser.saveUserToFile()
+			
+			authUser.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
+				self.subreddits = subs
+				
+				// Starts updates onto the TableView
+				self.redditTable.beginUpdates()
+				
+				for i in 0..<self.subreddits.count {
+					// Inserts a row for each Subreddit in list
+					self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
+				}
+				// Informs the tableview that the updates have concluded
+				self.redditTable.endUpdates()
+				
+			})
 		}
-        
-        repopulateSubTable(saveURL: saveURL)
-        
 	}
 	
 }

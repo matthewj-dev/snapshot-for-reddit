@@ -18,6 +18,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 	let manager = FileManager.default
 	
     var redditAPI = RedditHandler()
+	var imageCache = ImageCacher()
 	
 	var saveURL: String!
     var subreddit: Subreddit!
@@ -66,29 +67,37 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
         postCell.postTitle.text = post.title!
         
-        guard var thumbnail = post.thumbnail else {
-            return postCell
-        }
-        
-        if let preview = post.preview {
-            thumbnail = preview
-        }
-        
-        
-        DispatchQueue.global().async {
-            do {
-//                let imgData = try Data(contentsOf: URL(string: "https://s.abcnews.com/images/Lifestyle/puppy-ht-3-er-170907_4x3_992.jpg")!)
-                let imgData = try Data(contentsOf: thumbnail)
-
-                DispatchQueue.main.async {
-                    postCell.thumbnail.image = UIImage(data: imgData)
-                }
-            }
-            catch {
-                print("Shit happens")
-            }
-
-        }
+//        guard var thumbnail = post.thumbnail else {
+//            return postCell
+//        }
+//
+//        if let preview = post.preview {
+//            thumbnail = preview
+//        }
+//
+//
+//        DispatchQueue.global().async {
+//            do {
+////                let imgData = try Data(contentsOf: URL(string: "https://s.abcnews.com/images/Lifestyle/puppy-ht-3-er-170907_4x3_992.jpg")!)
+//                let imgData = try Data(contentsOf: thumbnail)
+//
+//                DispatchQueue.main.async {
+//                    postCell.thumbnail.image = UIImage(data: imgData)
+//                }
+//            }
+//            catch {
+//                print("Shit happens")
+//            }
+//
+//        }
+		if let key = post.id, let url = post.thumbnail {
+			DispatchQueue.main.async {
+				postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
+			}
+			
+		}
+		
+		
         return postCell
         
     }
@@ -131,7 +140,18 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
                             self.itemCount += 1
                         }
                     }, completion: nil)
-                    self.isUpdating = false
+					
+					DispatchQueue.global().async {
+						var imagePairs = [ImageCachePair]()
+						for i in oldItemCount..<self.subreddit.postCount {
+							if let key = self.subreddit[i]?.id, let url = self.subreddit[i]?.thumbnail {
+								imagePairs.append(ImageCachePair(key: key, url: url))
+							}
+						}
+						self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 0, completion: {() in })
+
+					}
+					self.isUpdating = false
                 }
             })
         }
@@ -153,7 +173,18 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 					self.navigationItem.title = self.subreddit.name
 				}
 				
-				self.postCollection.reloadData()
+				
+				var imagePairs = [ImageCachePair]()
+				for i in 0..<self.subreddit.postCount {
+					if let key = self.subreddit[i]?.id, let url = self.subreddit[i]?.thumbnail {
+						imagePairs.append(ImageCachePair(key: key, url: url))
+					}
+				}
+				
+				self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
+					self.postCollection.reloadData()
+				})
+				
 			}
 		})
 	}

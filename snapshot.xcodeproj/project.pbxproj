@@ -121,6 +121,7 @@
 		34960FB82057189E00977A53 /* Handlers and Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				5ACCC37E205E19D70001F685 /* ImageCacher.swift */,
 				345A31E7205F08E400C7EE50 /* Extensions */,
 				5A4CD659205A2E3200E0ECE0 /* Reddit Handler */,
 			);

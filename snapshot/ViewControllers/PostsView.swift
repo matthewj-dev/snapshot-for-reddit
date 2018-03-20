@@ -11,45 +11,45 @@ import UIKit
 class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet weak var postCollection: UICollectionView!
-	
-	var subredditToLoad = ""
-	
-	var ncCenter = NotificationCenter.default
-	let manager = FileManager.default
-	
+    
+    var subredditToLoad = ""
+    
+    var ncCenter = NotificationCenter.default
+    let manager = FileManager.default
+    
     var redditAPI = RedditHandler()
-	var imageCache = ImageCacher()
-	
-	var saveURL: String!
+    var imageCache = ImageCacher()
+    
+    var saveURL: String!
     var subreddit: Subreddit!
     var itemCount = 0
     
     override func loadView() {
         super.loadView()
         saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
-		self.navigationController?.navigationBar.prefersLargeTitles = true
-		
-		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-			redditAPI.authenticatedUser = authUser
-			self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-			authUser.saveUserToFile()
-		}
-		
-		loadSubredditIntoCollectionView()
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        
+        if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
+            redditAPI.authenticatedUser = authUser
+            self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+            authUser.saveUserToFile()
+        }
+        
+        loadSubredditIntoCollectionView()
     }
-	
-	//Called when view has finished loading but not yet appeared on screen
+    
+    //Called when view has finished loading but not yet appeared on screen
     override func viewDidLoad() {
         super.viewDidLoad()
-		
-		//Notification for when the user has logged in
-		ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
-		
-		//Notification for when the user dismisses the full screen image viewer
+        
+        //Notification for when the user has logged in
+        ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
+        
+        //Notification for when the user dismisses the full screen image viewer
         ncCenter.addObserver(self, selector: #selector(bringBackTab), name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
-		
-		postCollection.delegate = self
-		postCollection.dataSource = self
+        
+        postCollection.delegate = self
+        postCollection.dataSource = self
         
     }
     
@@ -90,14 +90,14 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 //            }
 //
 //        }
-		if let key = post.id, let url = post.thumbnail {
-			DispatchQueue.main.async {
-				postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
-			}
-			
-		}
-		
-		
+        if let key = post.id, let url = post.thumbnail {
+            DispatchQueue.main.async {
+                postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
+            }
+            
+        }
+        
+        
         return postCell
         
     }
@@ -123,81 +123,81 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         present(newView, animated: true, completion: nil)
         
     }
-	
-	//Variable used for detecting whether an update is already taking place
+    
+    //Variable used for detecting whether an update is already taking place
     private var isUpdating = false
-	
-	//Informs the subreddit object to load additional posts with async
+    
+    //Informs the subreddit object to load additional posts with async
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if !isUpdating && indexPath.row > postCollection.numberOfItems(inSection: 0) - 20 {
             isUpdating = true
             subreddit.asyncLoadAdditionalPosts(count: 100, completion: {(didload) in
                 if didload {
-					let oldItemCount = self.postCollection.numberOfItems(inSection: 0)
+                    let oldItemCount = self.postCollection.numberOfItems(inSection: 0)
                     self.postCollection.performBatchUpdates({
                         for i in oldItemCount..<self.subreddit.postCount {
                             self.postCollection.insertItems(at: [IndexPath(item: i, section: 0)])
                             self.itemCount += 1
                         }
                     }, completion: nil)
-					
-					DispatchQueue.global().async {
-						var imagePairs = [ImageCachePair]()
-						for i in oldItemCount..<self.subreddit.postCount {
-							if let key = self.subreddit[i]?.id, let url = self.subreddit[i]?.thumbnail {
-								imagePairs.append(ImageCachePair(key: key, url: url))
-							}
-						}
-						self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 0, completion: {() in })
+                    
+                    DispatchQueue.global().async {
+                        var imagePairs = [ImageCachePair]()
+                        for i in oldItemCount..<self.subreddit.postCount {
+                            if let key = self.subreddit[i]?.id, let url = self.subreddit[i]?.thumbnail {
+                                imagePairs.append(ImageCachePair(key: key, url: url))
+                            }
+                        }
+                        self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 0, completion: {() in })
 
-					}
-					self.isUpdating = false
+                    }
+                    self.isUpdating = false
                 }
             })
         }
     }
-	
-	/**
-	Loads the subreddit through async and then loads the UICollectionView with the posts of that subreddit
-	*/
-	func loadSubredditIntoCollectionView() {
-		redditAPI.asyncGetSubreddit(Subreddit: subredditToLoad, count: 100, id: nil, type: .image, completion: {(newSubreddit) in
-			if newSubreddit != nil {
-				self.subreddit = newSubreddit!
-				self.itemCount = self.subreddit.postCount
-				
-				if self.subreddit.name.isEmpty {
-					self.navigationItem.title = "Home"
-				}
-				else {
-					self.navigationItem.title = self.subreddit.name
-				}
-				
-				
-				var imagePairs = [ImageCachePair]()
-				for i in 0..<self.subreddit.postCount {
-					if let key = self.subreddit[i]?.id, let url = self.subreddit[i]?.thumbnail {
-						imagePairs.append(ImageCachePair(key: key, url: url))
-					}
-				}
-				
-				self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
-					self.postCollection.reloadData()
-				})
-				
-			}
-		})
-	}
     
-	
-	//Function called by Notification Center when notification notifies that a user has logged in
+    /**
+    Loads the subreddit through async and then loads the UICollectionView with the posts of that subreddit
+    */
+    func loadSubredditIntoCollectionView() {
+        redditAPI.asyncGetSubreddit(Subreddit: subredditToLoad, count: 100, id: nil, type: .image, completion: {(newSubreddit) in
+            if newSubreddit != nil {
+                self.subreddit = newSubreddit!
+                self.itemCount = self.subreddit.postCount
+                
+                if self.subreddit.name.isEmpty {
+                    self.navigationItem.title = "Home"
+                }
+                else {
+                    self.navigationItem.title = self.subreddit.name
+                }
+                
+                
+                var imagePairs = [ImageCachePair]()
+                for i in 0..<self.subreddit.postCount {
+                    if let key = self.subreddit[i]?.id, let url = self.subreddit[i]?.thumbnail {
+                        imagePairs.append(ImageCachePair(key: key, url: url))
+                    }
+                }
+                
+                self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
+                    self.postCollection.reloadData()
+                })
+                
+            }
+        })
+    }
+    
+    
+    //Function called by Notification Center when notification notifies that a user has logged in
     @objc func userLoggedInReload() {
         
-		if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-			redditAPI.authenticatedUser = authUser
-		}
-	
-		loadSubredditIntoCollectionView()
+        if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
+            redditAPI.authenticatedUser = authUser
+        }
+    
+        loadSubredditIntoCollectionView()
     }
     
     @objc func bringBackTab() {

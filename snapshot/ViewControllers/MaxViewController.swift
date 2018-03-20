@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ImageIO
 
 class MaxViewController: UIViewController {
 
@@ -47,7 +48,7 @@ class MaxViewController: UIViewController {
             imageToLoad = image
             postTitle.text = subreddit[index]?.title
             //Switches URL to load if it is of certain types
-            if let contentURL = subreddit[index]?.content, ["png","jpg"].contains(contentURL.pathExtension) {
+            if let contentURL = subreddit[index]?.content, ["png","jpg","gif"].contains(contentURL.pathExtension) {
                 print(contentURL.pathExtension)
                 imageToLoad = contentURL
             }

@@ -25,7 +25,10 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		searchy.searchBar.setImage(UIImage(), for: .search, state: .normal)
 		searchy.searchBar.delegate = self
 		
+		self.navigationController?.navigationBar.prefersLargeTitles = false
 		self.navigationItem.searchController = searchy
+		
+		
         redditTable.delegate = self
         redditTable.dataSource = self
         

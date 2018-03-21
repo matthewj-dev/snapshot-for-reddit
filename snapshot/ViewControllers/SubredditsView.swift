@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
     @IBOutlet weak var redditTable: UITableView!
     
@@ -18,7 +18,14 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     override func loadView() {
         super.loadView()
-        
+		
+		let searchy = UISearchController(searchResultsController: nil)
+		searchy.searchBar.placeholder = "Go to Subreddit"
+		searchy.searchBar.returnKeyType = .continue
+		searchy.searchBar.setImage(UIImage(), for: .search, state: .normal)
+		searchy.searchBar.delegate = self
+		
+		self.navigationItem.searchController = searchy
         redditTable.delegate = self
         redditTable.dataSource = self
         
@@ -121,5 +128,14 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
             })
         }
     }
+	
+	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+		self.navigationItem.searchController?.dismiss(animated: true, completion: nil)
+		let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
+		newView.subredditToLoad = searchBar.text!
+		self.navigationController?.pushViewController(newView, animated: true)
+		searchBar.text = ""
+		
+	}
     
 }

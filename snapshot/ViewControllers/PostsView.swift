@@ -66,38 +66,13 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         }
         
         postCell.postTitle.text = post.title!
-        
-//        guard var thumbnail = post.thumbnail else {
-//            return postCell
-//        }
-//
-//        if let preview = post.preview {
-//            thumbnail = preview
-//        }
-//
-//
-//        DispatchQueue.global().async {
-//            do {
-////                let imgData = try Data(contentsOf: URL(string: "https://s.abcnews.com/images/Lifestyle/puppy-ht-3-er-170907_4x3_992.jpg")!)
-//                let imgData = try Data(contentsOf: thumbnail)
-//
-//                DispatchQueue.main.async {
-//                    postCell.thumbnail.image = UIImage(data: imgData)
-//                }
-//            }
-//            catch {
-//                print("Shit happens")
-//            }
-//
-//        }
+		
         if let key = post.id, let url = post.thumbnail {
             DispatchQueue.main.async {
                 postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
             }
-            
         }
-        
-        
+		
         return postCell
         
     }
@@ -180,15 +155,22 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
                         imagePairs.append(ImageCachePair(key: key, url: url))
                     }
                 }
-                
-                self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
-                    self.postCollection.reloadData()
-                })
-                
-            }
-        })
-    }
-    
+				
+				self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
+					self.postCollection.reloadData()
+				})
+				
+			}
+			else {
+				let alert = UIAlertController(title: "Subreddit not found", message: "The specified subreddit was not found", preferredStyle: .alert)
+				alert.addAction(UIAlertAction(title: "Understood", style: .cancel, handler: {Void in
+					self.navigationController?.popViewController(animated: true)
+				}))
+				self.present(alert, animated: true, completion: nil)
+			}
+		})
+	}
+	
     
     //Function called by Notification Center when notification notifies that a user has logged in
     @objc func userLoggedInReload() {

@@ -8,21 +8,27 @@
 
 import UIKit
 import ImageIO
+import AVFoundation
+import AVKit
 
 class MaxViewController: UIViewController {
 
     @IBOutlet var maxView: UIImageView!
     @IBOutlet weak var postTitle: UILabel!
-    
+	@IBOutlet weak var player: UIView!
+	
     var ncObject = NotificationCenter.default
-    
+	
+	var avPlayer: AVPlayer!
+	var playerLayer = AVPlayerLayer()
+	
     var imageToLoad: URL!
     var subreddit: Subreddit!
     var index = 0
     
     override func loadView() {
         super.loadView()
-        
+		
         //Creates gesture to dismiss view
         let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
         
@@ -36,6 +42,7 @@ class MaxViewController: UIViewController {
         
         //Adds gestures to the image and views
         self.view.addGestureRecognizer(tappy)
+		self.player.addGestureRecognizer(tappy)
         maxView.addGestureRecognizer(tappy)
         maxView.addGestureRecognizer(swippyRight)
         maxView.addGestureRecognizer(swippyLeft)
@@ -52,11 +59,32 @@ class MaxViewController: UIViewController {
                 print(contentURL.pathExtension)
                 imageToLoad = contentURL
             }
+			else if let contentURL = subreddit[index]?.content, ["mp4","webm","gifv"].contains(contentURL.pathExtension) {
+				print(contentURL.pathExtension)
+				var videoURL = contentURL
+				videoURL = URL(string: videoURL.absoluteString.replacingOccurrences(of: ".webm", with: ".mp4"))!
+				videoURL = URL(string: videoURL.absoluteString.replacingOccurrences(of: ".gifv", with: ".mp4"))!
+				
+				self.maxView.image = nil
+				print(videoURL)
+				avPlayer = AVPlayer(url: videoURL)
+				playerLayer = AVPlayerLayer(player: avPlayer)
+				playerLayer.frame = self.player.frame
+				
+				self.view.layer.addSublayer(playerLayer)
+				
+				avPlayer.play()
+				
+				return
+			}
+			else {
+				print("Nothing special about: \(subreddit[index]?.content)")
+			}
         }
         else {
             return
         }
-        
+        playerLayer.removeFromSuperlayer()
         DispatchQueue.global().async {
             do{
                 let imageData = try Data(contentsOf: self.imageToLoad)
@@ -79,6 +107,10 @@ class MaxViewController: UIViewController {
             }
         }
     }
+	
+	override func viewDidLayoutSubviews() {
+		playerLayer.frame = player.frame
+	}
     
     @objc func dismissView() {
 //        self.maxView.stopAnimating()

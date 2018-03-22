@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="y2J-Dp-K2v">
-                                <rect key="frame" x="0.0" y="44" width="375" height="817"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="861"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6Si-F6-H5j">
                                     <size key="itemSize" width="182" height="136"/>
@@ -72,7 +72,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="y2J-Dp-K2v" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="J6r-2u-AU3"/>
-                            <constraint firstItem="y2J-Dp-K2v" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="NSP-JC-E91"/>
+                            <constraint firstItem="y2J-Dp-K2v" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="TF5-V4-hsl"/>
                             <constraint firstItem="y2J-Dp-K2v" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="83" id="gF1-0F-qNn"/>
                             <constraint firstItem="y2J-Dp-K2v" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="nKy-zX-esu"/>
                         </constraints>
@@ -85,7 +85,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2126" y="-712"/>
+            <point key="canvasLocation" x="2125.5999999999999" y="-712.3152709359606"/>
         </scene>
         <!--SubredditView-->
         <scene sceneID="UuB-qf-S8q">
@@ -96,7 +96,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hjT-ml-GNc">
-                                <rect key="frame" x="0.0" y="44" width="375" height="734"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="subredditListCell" rowHeight="60" id="fpI-iF-40T" customClass="RedditListCell" customModule="snapshot" customModuleProvider="target">
@@ -107,7 +107,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTc-w4-PMU">
-                                                    <rect key="frame" x="15" y="11" width="694" height="38"/>
+                                                    <rect key="frame" x="15" y="11" width="345" height="38"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -129,10 +129,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="hjT-ml-GNc" firstAttribute="top" secondItem="ilj-hy-ss3" secondAttribute="top" id="17C-fp-Dqs"/>
                             <constraint firstItem="hjT-ml-GNc" firstAttribute="bottom" secondItem="QIb-MU-uMp" secondAttribute="bottom" id="PHC-wB-sLt"/>
                             <constraint firstItem="hjT-ml-GNc" firstAttribute="trailing" secondItem="QIb-MU-uMp" secondAttribute="trailing" id="i1v-Ym-xNB"/>
                             <constraint firstItem="hjT-ml-GNc" firstAttribute="leading" secondItem="QIb-MU-uMp" secondAttribute="leading" id="oif-F3-S1d"/>
-                            <constraint firstItem="hjT-ml-GNc" firstAttribute="top" secondItem="QIb-MU-uMp" secondAttribute="top" id="zhB-vQ-VGB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="QIb-MU-uMp"/>
                     </view>

@@ -26,22 +26,24 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     override func loadView() {
         super.loadView()
+		
         saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
             redditAPI.authenticatedUser = authUser
-            self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+			if self.tabBarController != nil {
+				self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+			}
+			
             authUser.saveUserToFile()
         }
-        
-        loadSubredditIntoCollectionView()
     }
     
     //Called when view has finished loading but not yet appeared on screen
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
         //Notification for when the user has logged in
         ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
         
@@ -50,8 +52,12 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
         postCollection.delegate = self
         postCollection.dataSource = self
-        
+		loadSubredditIntoCollectionView()
     }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(true)
+	}
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -138,6 +144,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     func loadSubredditIntoCollectionView() {
         redditAPI.asyncGetSubreddit(Subreddit: subredditToLoad, count: 100, id: nil, type: .image, completion: {(newSubreddit) in
             if newSubreddit != nil {
+				
                 self.subreddit = newSubreddit!
                 self.itemCount = self.subreddit.postCount
                 

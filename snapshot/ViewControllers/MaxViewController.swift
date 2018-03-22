@@ -26,9 +26,13 @@ class MaxViewController: UIViewController {
     var imageToLoad: URL!
     var subreddit: Subreddit!
     var index = 0
+	
+	var popup: Popup!
     
     override func loadView() {
         super.loadView()
+		maxView.image = nil
+		popup = Popup(frame: self.view.bounds)
 		
         //Creates gesture to dismiss view
         let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
@@ -89,6 +93,7 @@ class MaxViewController: UIViewController {
             return
         }
         playerLayer.removeFromSuperlayer()
+		self.view.addSubview(popup)
         DispatchQueue.global().async {
             do{
                 let imageData = try Data(contentsOf: self.imageToLoad)
@@ -103,6 +108,7 @@ class MaxViewController: UIViewController {
                 else {
                     DispatchQueue.main.sync {
                         self.maxView.image = UIImage(data: imageData)
+						self.popup.removeFromSuperview()
                     }
                 }
             }

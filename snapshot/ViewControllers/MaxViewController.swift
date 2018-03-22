@@ -16,28 +16,28 @@ class MaxViewController: UIViewController {
 
     @IBOutlet var maxView: UIImageView!
     @IBOutlet weak var postTitle: UILabel!
-	@IBOutlet weak var player: UIView!
-	
+    @IBOutlet weak var player: UIView!
+    
     var ncObject = NotificationCenter.default
-	
-	var avPlayer: AVPlayer!
-	var playerLayer = AVPlayerLayer()
-	
+    
+    var avPlayer: AVPlayer!
+    var playerLayer = AVPlayerLayer()
+    
     var imageToLoad: URL!
     var subreddit: Subreddit!
     var index = 0
-	
-	var popup: Popup!
+    
+    var popup: Popup!
     
     override func loadView() {
         super.loadView()
-		maxView.image = nil
-		popup = Popup(frame: self.view.bounds)
-		
+        maxView.image = nil
+        popup = Popup(frame: self.view.bounds)
+        
         //Creates gesture to dismiss view
         let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
-		
-		let holdy = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
+        
+        let holdy = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
         
         //Creates gesture to change image when swiping left
         let swippyLeft = UISwipeGestureRecognizer(target: self, action: #selector(changeImageLeft))
@@ -49,9 +49,9 @@ class MaxViewController: UIViewController {
         
         //Adds gestures to the image and views
         self.view.addGestureRecognizer(tappy)
-		self.player.addGestureRecognizer(tappy)
+        self.player.addGestureRecognizer(tappy)
         maxView.addGestureRecognizer(tappy)
-		maxView.addGestureRecognizer(holdy)
+        maxView.addGestureRecognizer(holdy)
         maxView.addGestureRecognizer(swippyRight)
         maxView.addGestureRecognizer(swippyLeft)
     }
@@ -67,33 +67,33 @@ class MaxViewController: UIViewController {
                 print(contentURL.pathExtension)
                 imageToLoad = contentURL
             }
-			else if let contentURL = subreddit[index]?.content, ["mp4","webm","gifv"].contains(contentURL.pathExtension) {
-				print(contentURL.pathExtension)
-				var videoURL = contentURL
-				videoURL = URL(string: videoURL.absoluteString.replacingOccurrences(of: ".webm", with: ".mp4"))!
-				videoURL = URL(string: videoURL.absoluteString.replacingOccurrences(of: ".gifv", with: ".mp4"))!
-				
-				self.maxView.image = nil
-				print(videoURL)
-				avPlayer = AVPlayer(url: videoURL)
-				playerLayer = AVPlayerLayer(player: avPlayer)
-				playerLayer.frame = self.player.frame
-				
-				self.view.layer.addSublayer(playerLayer)
-				
-				avPlayer.play()
-				
-				return
-			}
-			else {
-				print("Nothing special about: \(subreddit[index]?.content)")
-			}
+            else if let contentURL = subreddit[index]?.content, ["mp4","webm","gifv"].contains(contentURL.pathExtension) {
+                print(contentURL.pathExtension)
+                var videoURL = contentURL
+                videoURL = URL(string: videoURL.absoluteString.replacingOccurrences(of: ".webm", with: ".mp4"))!
+                videoURL = URL(string: videoURL.absoluteString.replacingOccurrences(of: ".gifv", with: ".mp4"))!
+                
+                self.maxView.image = nil
+                print(videoURL)
+                avPlayer = AVPlayer(url: videoURL)
+                playerLayer = AVPlayerLayer(player: avPlayer)
+                playerLayer.frame = self.player.frame
+                
+                self.view.layer.addSublayer(playerLayer)
+                
+                avPlayer.play()
+                
+                return
+            }
+            else {
+                print("Nothing special about: \(subreddit[index]?.content)")
+            }
         }
         else {
             return
         }
         playerLayer.removeFromSuperlayer()
-		self.view.addSubview(popup)
+        self.view.addSubview(popup)
         DispatchQueue.global().async {
             do{
                 let imageData = try Data(contentsOf: self.imageToLoad)
@@ -108,7 +108,7 @@ class MaxViewController: UIViewController {
                 else {
                     DispatchQueue.main.sync {
                         self.maxView.image = UIImage(data: imageData)
-						self.popup.removeFromSuperview()
+                        self.popup.removeFromSuperview()
                     }
                 }
             }
@@ -117,54 +117,54 @@ class MaxViewController: UIViewController {
             }
         }
     }
-	
-	override func viewDidLayoutSubviews() {
-		playerLayer.frame = player.frame
-	}
-	
-	@objc func longPress() {
-		// Creates UIAlertController
-		let alert = UIAlertController(title: "Actions", message: "Select an action to perform", preferredStyle: .actionSheet)
-		
-		// Action creates a SafariViewController and then presents it
-		alert.addAction(UIAlertAction(title: "Open in Safari", style: .default, handler: { Void in
-			let safariView = SFSafariViewController(url: (self.subreddit[self.index]?.content)!)
-			self.present(safariView, animated: true, completion: nil)
-		}))
-		
-		// Sharing Action button
-		alert.addAction(UIAlertAction(title: "Share", style: .default, handler: { Void in
-			
-			// Creates new UIAlertController for selection share option
-			let shareAlert = UIAlertController(title: "Sharing", message: "Select what to share", preferredStyle: .actionSheet)
-			
-			// Action button that when pressed creates a sharesheet with the shareable content being the Image currently loaded
-			shareAlert.addAction(UIAlertAction(title: "Image", style: .default, handler: { Void in
-				let shareSheet = UIActivityViewController(activityItems: [self.maxView.image], applicationActivities: nil)
-				self.present(shareSheet, animated: true, completion: nil)
-			}))
-			
-			// Action button that when pressed creates a sharesheet with the shareable content being the url for the content currently loaded
-			shareAlert.addAction(UIAlertAction(title: "Link", style: .default, handler: { Void in
-				let shareSheet = UIActivityViewController(activityItems: [(self.subreddit[self.index]?.content)!], applicationActivities: nil)
-				self.present(shareSheet, animated: true, completion: nil)
-			}))
-			shareAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-			
-			// If the current image loaded into the ImageView is nil then the button for image is disabled
-			if self.maxView.image == nil {
-				shareAlert.actions[0].isEnabled = false
-			}
-			
-			// Presents the share selection controller
-			self.present(shareAlert, animated: true, completion: nil)
-		}))
-		
-		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-		
-		// Presents first UIAlertController
-		self.present(alert, animated: true, completion: nil)
-	}
+    
+    override func viewDidLayoutSubviews() {
+        playerLayer.frame = player.frame
+    }
+    
+    @objc func longPress() {
+        // Creates UIAlertController
+        let alert = UIAlertController(title: "Actions", message: "Select an action to perform", preferredStyle: .actionSheet)
+        
+        // Action creates a SafariViewController and then presents it
+        alert.addAction(UIAlertAction(title: "Open in Safari", style: .default, handler: { Void in
+            let safariView = SFSafariViewController(url: (self.subreddit[self.index]?.content)!)
+            self.present(safariView, animated: true, completion: nil)
+        }))
+        
+        // Sharing Action button
+        alert.addAction(UIAlertAction(title: "Share", style: .default, handler: { Void in
+            
+            // Creates new UIAlertController for selection share option
+            let shareAlert = UIAlertController(title: "Sharing", message: "Select what to share", preferredStyle: .actionSheet)
+            
+            // Action button that when pressed creates a sharesheet with the shareable content being the Image currently loaded
+            shareAlert.addAction(UIAlertAction(title: "Image", style: .default, handler: { Void in
+                let shareSheet = UIActivityViewController(activityItems: [self.maxView.image], applicationActivities: nil)
+                self.present(shareSheet, animated: true, completion: nil)
+            }))
+            
+            // Action button that when pressed creates a sharesheet with the shareable content being the url for the content currently loaded
+            shareAlert.addAction(UIAlertAction(title: "Link", style: .default, handler: { Void in
+                let shareSheet = UIActivityViewController(activityItems: [(self.subreddit[self.index]?.content)!], applicationActivities: nil)
+                self.present(shareSheet, animated: true, completion: nil)
+            }))
+            shareAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            // If the current image loaded into the ImageView is nil then the button for image is disabled
+            if self.maxView.image == nil {
+                shareAlert.actions[0].isEnabled = false
+            }
+            
+            // Presents the share selection controller
+            self.present(shareAlert, animated: true, completion: nil)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        // Presents first UIAlertController
+        self.present(alert, animated: true, completion: nil)
+    }
     
     @objc func dismissView() {
         ncObject.post(name: Notification.Name.init(rawValue: "isDismissed"), object: nil)

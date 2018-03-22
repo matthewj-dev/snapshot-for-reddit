@@ -22,13 +22,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="ftA-gM-3Ze">
-                                <rect key="frame" x="90" y="90" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ftA-gM-3Ze">
+                                <rect key="frame" x="82" y="102" width="37" height="37"/>
                             </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iks-fg-ltJ">
+                                <rect key="frame" x="8" y="62" width="184" height="31.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="Iks-fg-ltJ" firstAttribute="top" secondItem="yX5-t2-pHd" secondAttribute="top" constant="62" id="QiC-Sd-JuE"/>
+                            <constraint firstAttribute="trailing" secondItem="ftA-gM-3Ze" secondAttribute="trailing" constant="81" id="bNI-NS-lXo"/>
+                            <constraint firstItem="Iks-fg-ltJ" firstAttribute="leading" secondItem="yX5-t2-pHd" secondAttribute="leading" constant="8" id="dYX-yz-9Kq"/>
+                            <constraint firstItem="ftA-gM-3Ze" firstAttribute="top" secondItem="Iks-fg-ltJ" secondAttribute="bottom" constant="8.5" id="knX-Dx-hzT"/>
+                            <constraint firstItem="ftA-gM-3Ze" firstAttribute="leading" secondItem="yX5-t2-pHd" secondAttribute="leading" constant="82" id="q6J-HX-iin"/>
+                            <constraint firstAttribute="trailing" secondItem="Iks-fg-ltJ" secondAttribute="trailing" constant="8" id="tz3-bX-Vpc"/>
+                        </constraints>
                     </view>
-                    <blurEffect style="light"/>
+                    <blurEffect style="regular"/>
                 </visualEffectView>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

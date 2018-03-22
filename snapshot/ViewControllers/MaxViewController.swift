@@ -31,7 +31,6 @@ class MaxViewController: UIViewController {
     
     override func loadView() {
         super.loadView()
-		maxView.image = nil
 		popup = Popup(frame: self.view.bounds)
 		
         //Creates gesture to dismiss view
@@ -48,17 +47,20 @@ class MaxViewController: UIViewController {
         swippyRight.direction = .right
         
         //Adds gestures to the image and views
+		popup.addGestureRecognizer(tappy)
         self.view.addGestureRecognizer(tappy)
 		self.player.addGestureRecognizer(tappy)
+		
         maxView.addGestureRecognizer(tappy)
 		maxView.addGestureRecognizer(holdy)
         maxView.addGestureRecognizer(swippyRight)
         maxView.addGestureRecognizer(swippyLeft)
+		
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
         if let image = subreddit[index]?.preview {
             imageToLoad = image
             postTitle.text = subreddit[index]?.title
@@ -103,6 +105,7 @@ class MaxViewController: UIViewController {
                     DispatchQueue.main.sync {
                         self.maxView.image = gifToLoad
                         self.maxView.startAnimating()
+						self.popup.removeFromSuperview()
                     }
                 }
                 else {

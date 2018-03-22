@@ -9,7 +9,7 @@
 import UIKit
 
 class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UIViewControllerPreviewingDelegate {
-	
+    
     @IBOutlet weak var redditTable: UITableView!
     
     var redditAPI = RedditHandler()
@@ -18,20 +18,20 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     override func loadView() {
         super.loadView()
-		
-		// Creates the Search controller that is used as the 'Go to Subreddit' option
-		let searchy = UISearchController(searchResultsController: nil)
-		searchy.searchBar.placeholder = "Go to Subreddit"
-		searchy.searchBar.returnKeyType = .continue
-		searchy.searchBar.setImage(UIImage(), for: .search, state: .normal)
-		searchy.searchBar.delegate = self
-		
-		// Assigns the controller to the navigationitem's reference for a searchcontroller
-		self.navigationItem.searchController = searchy
-		
-		// Registers the tableview as able to accept 3D touch
-		self.registerForPreviewing(with: self, sourceView: self.redditTable)
-		
+        
+        // Creates the Search controller that is used as the 'Go to Subreddit' option
+        let searchy = UISearchController(searchResultsController: nil)
+        searchy.searchBar.placeholder = "Go to Subreddit"
+        searchy.searchBar.returnKeyType = .continue
+        searchy.searchBar.setImage(UIImage(), for: .search, state: .normal)
+        searchy.searchBar.delegate = self
+        
+        // Assigns the controller to the navigationitem's reference for a searchcontroller
+        self.navigationItem.searchController = searchy
+        
+        // Registers the tableview as able to accept 3D touch
+        self.registerForPreviewing(with: self, sourceView: self.redditTable)
+        
         redditTable.delegate = self
         redditTable.dataSource = self
         
@@ -60,7 +60,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.navigationController?.pushViewController(newView, animated: true)
         self.redditTable.deselectRow(at: indexPath, animated: true)
     }
-	
+    
     //Creates and returns each cell of the table
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = redditTable.dequeueReusableCell(withIdentifier: "subredditListCell") as! RedditListCell
@@ -134,48 +134,48 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
             })
         }
     }
-	
-	// Function called when the 'continue' button is pressed while editing the text of the searchbar
-	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-		self.navigationItem.searchController?.dismiss(animated: true, completion: nil)
-		let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
-		newView.subredditToLoad = searchBar.text!
-		self.navigationController?.pushViewController(newView, animated: true)
-		searchBar.text = ""
-		
-	}
-	
-	// Function called when previewing a view with 3D Touch
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-		
-		// Uses the point provided by the function to get the indexpath of the item selected from the tableview
-		guard let indexPath = redditTable.indexPathForRow(at: location) else {
-			return nil
-		}
-		
-		// Uses the indexpath mentioned above to reference the cell
-		guard let cell = redditTable.cellForRow(at: indexPath) else {
-			return nil
-		}
-		
-		let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
-		if indexPath.section == 1 {
-			newView.subredditToLoad = subreddits[indexPath.row]
-		} else {
-			newView.subredditToLoad = ""
-		}
-		
-		self.redditTable.deselectRow(at: indexPath, animated: true)
-		
-		// Tells the UI which rectangle to animate with the 3D touch animation
-		previewingContext.sourceRect = cell.frame
-		
-		return newView
-	}
-	
-	// Function called when pressing a view with 3D Touch
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-		self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
-	}
+    
+    // Function called when the 'continue' button is pressed while editing the text of the searchbar
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.navigationItem.searchController?.dismiss(animated: true, completion: nil)
+        let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
+        newView.subredditToLoad = searchBar.text!
+        self.navigationController?.pushViewController(newView, animated: true)
+        searchBar.text = ""
+        
+    }
+    
+    // Function called when previewing a view with 3D Touch
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        
+        // Uses the point provided by the function to get the indexpath of the item selected from the tableview
+        guard let indexPath = redditTable.indexPathForRow(at: location) else {
+            return nil
+        }
+        
+        // Uses the indexpath mentioned above to reference the cell
+        guard let cell = redditTable.cellForRow(at: indexPath) else {
+            return nil
+        }
+        
+        let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
+        if indexPath.section == 1 {
+            newView.subredditToLoad = subreddits[indexPath.row]
+        } else {
+            newView.subredditToLoad = ""
+        }
+        
+        self.redditTable.deselectRow(at: indexPath, animated: true)
+        
+        // Tells the UI which rectangle to animate with the 3D touch animation
+        previewingContext.sourceRect = cell.frame
+        
+        return newView
+    }
+    
+    // Function called when pressing a view with 3D Touch
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
+    }
     
 }

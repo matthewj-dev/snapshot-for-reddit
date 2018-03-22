@@ -26,16 +26,16 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     override func loadView() {
         super.loadView()
-		
+        
         saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
             redditAPI.authenticatedUser = authUser
-			if self.tabBarController != nil {
-				self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-			}
-			
+            if self.tabBarController != nil {
+                self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
+            }
+            
             authUser.saveUserToFile()
         }
     }
@@ -43,7 +43,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     //Called when view has finished loading but not yet appeared on screen
     override func viewDidLoad() {
         super.viewDidLoad()
-		
+        
         //Notification for when the user has logged in
         ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
         
@@ -52,12 +52,12 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
         postCollection.delegate = self
         postCollection.dataSource = self
-		loadSubredditIntoCollectionView()
+        loadSubredditIntoCollectionView()
     }
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(true)
-	}
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+    }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -72,13 +72,13 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         }
         
         postCell.postTitle.text = post.title!
-		
+        
         if let key = post.id, let url = post.thumbnail {
             DispatchQueue.main.async {
                 postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
             }
         }
-		
+        
         return postCell
         
     }
@@ -144,7 +144,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     func loadSubredditIntoCollectionView() {
         redditAPI.asyncGetSubreddit(Subreddit: subredditToLoad, count: 100, id: nil, type: .image, completion: {(newSubreddit) in
             if newSubreddit != nil {
-				
+                
                 self.subreddit = newSubreddit!
                 self.itemCount = self.subreddit.postCount
                 
@@ -162,22 +162,22 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
                         imagePairs.append(ImageCachePair(key: key, url: url))
                     }
                 }
-				
-				self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
-					self.postCollection.reloadData()
-				})
-				
-			}
-			else {
-				let alert = UIAlertController(title: "Subreddit not found", message: "The specified subreddit was not found", preferredStyle: .alert)
-				alert.addAction(UIAlertAction(title: "Understood", style: .cancel, handler: {Void in
-					self.navigationController?.popViewController(animated: true)
-				}))
-				self.present(alert, animated: true, completion: nil)
-			}
-		})
-	}
-	
+                
+                self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
+                    self.postCollection.reloadData()
+                })
+                
+            }
+            else {
+                let alert = UIAlertController(title: "Subreddit not found", message: "The specified subreddit was not found", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Understood", style: .cancel, handler: {Void in
+                    self.navigationController?.popViewController(animated: true)
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }
+        })
+    }
+    
     
     //Function called by Notification Center when notification notifies that a user has logged in
     @objc func userLoggedInReload() {

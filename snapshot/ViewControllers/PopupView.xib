@@ -41,7 +41,7 @@
                             <constraint firstAttribute="trailing" secondItem="Iks-fg-ltJ" secondAttribute="trailing" constant="8" id="tz3-bX-Vpc"/>
                         </constraints>
                     </view>
-                    <blurEffect style="regular"/>
+                    <blurEffect style="dark"/>
                 </visualEffectView>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

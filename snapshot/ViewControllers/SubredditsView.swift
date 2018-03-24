@@ -55,7 +55,11 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
         if indexPath.section == 1 {
             newView.subredditToLoad = subreddits[indexPath.row]
         } else {
-            newView.subredditToLoad = ""
+			switch indexPath.row {
+			case 0: newView.subredditToLoad = ""
+			case 1: newView.subredditToLoad = "Popular"
+			default: newView.subredditToLoad = ""
+			}
         }
         self.navigationController?.pushViewController(newView, animated: true)
         self.redditTable.deselectRow(at: indexPath, animated: true)
@@ -64,13 +68,20 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Creates and returns each cell of the table
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = redditTable.dequeueReusableCell(withIdentifier: "subredditListCell") as! RedditListCell
-        
+		
+		if indexPath.section == 0 {
+			switch indexPath.row {
+			case 0: cell.subredditName.text = "Home"
+			case 1: cell.subredditName.text = "Popular"
+			default: cell.subredditName.text = "Home"
+			}
+		}
+		
         if indexPath.section == 1 {
             cell.subredditName.text = subreddits[indexPath.row]
             return cell
         }
-        
-        cell.subredditName.text = "Home"
+		
         return cell
         
     }
@@ -94,7 +105,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Tells the tableview how many rows are in a section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return 1
+            return 2
         }
         if section == 1 {
             return subreddits.count

@@ -12,11 +12,13 @@ import ImageIO
 import AVFoundation
 import AVKit
 
-class MaxViewController: UIViewController {
+class MaxViewController: UIViewController, UIScrollViewDelegate {
 
     @IBOutlet var maxView: UIImageView!
     @IBOutlet weak var postTitle: UILabel!
 	@IBOutlet weak var player: UIView!
+	@IBOutlet weak var scrollView: UIScrollView!
+	@IBOutlet weak var imageHeight: NSLayoutConstraint!
 	
     var ncObject = NotificationCenter.default
 	
@@ -32,6 +34,9 @@ class MaxViewController: UIViewController {
     override func loadView() {
         super.loadView()
 		popup = Popup(frame: self.view.bounds)
+		
+		scrollView.minimumZoomScale = 1
+		scrollView.delegate = self
 		
         //Creates gesture to dismiss view
         let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
@@ -60,6 +65,7 @@ class MaxViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		scrollView.setZoomScale(1.0, animated: false)
 		
         if let image = subreddit[index]?.preview {
             imageToLoad = image
@@ -123,6 +129,8 @@ class MaxViewController: UIViewController {
 	
 	override func viewDidLayoutSubviews() {
 		playerLayer.frame = player.frame
+		scrollView.contentOffset = CGPoint(x: 0, y: 0)
+		imageHeight.constant = scrollView.frame.height
 	}
 	
 	@objc func longPress() {
@@ -168,7 +176,26 @@ class MaxViewController: UIViewController {
 		// Presents first UIAlertController
 		self.present(alert, animated: true, completion: nil)
 	}
-    
+	
+	
+	let taptic = UINotificationFeedbackGenerator()
+	var isZoomedIn = true
+	func scrollViewDidZoom(_ scrollView: UIScrollView) {
+		taptic.prepare()
+		
+		if scrollView.zoomScale == scrollView.minimumZoomScale && isZoomedIn == false {
+			taptic.notificationOccurred(.success)
+			isZoomedIn = true
+		}
+		else if scrollView.zoomScale > scrollView.minimumZoomScale {
+			isZoomedIn = false
+		}
+	}
+	
+	func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+		return self.maxView
+	}
+	
     @objc func dismissView() {
         ncObject.post(name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
         self.dismiss(animated: true, completion: nil)
@@ -187,4 +214,5 @@ class MaxViewController: UIViewController {
             self.viewDidLoad()
         }
     }
+	
 }

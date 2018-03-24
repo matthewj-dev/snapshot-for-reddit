@@ -7,8 +7,34 @@
 //
 
 import UIKit
+import SafariServices
 
-class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate {
+	
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		guard let indexPath = postCollection.indexPathForItem(at: location) else { return nil }
+		guard let cell = postCollection.cellForItem(at: indexPath) else { return  nil }
+		
+		let newView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MaxImageController") as! MaxViewController
+		
+		newView.subreddit = subreddit
+		newView.index = indexPath.row
+		
+		previewingContext.sourceRect = cell.frame
+		
+		
+		return newView
+	}
+	
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+		viewControllerToCommit.modalTransitionStyle = .crossDissolve
+		viewControllerToCommit.modalPresentationStyle = .overCurrentContext
+		
+		self.tabBarController?.tabBar.isHidden = true
+		
+		present(viewControllerToCommit, animated: true, completion: nil)
+	}
+	
 
     @IBOutlet weak var postCollection: UICollectionView!
     
@@ -23,9 +49,11 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     var saveURL: String!
     var subreddit: Subreddit!
     var itemCount = 0
-    
+	
     override func loadView() {
         super.loadView()
+		
+		registerForPreviewing(with: self, sourceView: self.postCollection)
 		
         saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
         self.navigationController?.navigationBar.prefersLargeTitles = true

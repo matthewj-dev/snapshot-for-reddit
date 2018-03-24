@@ -22,6 +22,8 @@ public class Subreddit {
 	let bannerURL: URL?
 	let api: RedditHandler
 	
+	private var finalID: String?
+	
 	/**
 	- Parameter api: RedditHandler that will be used for future requests
 	- Parameter response: Response from Reddit API
@@ -45,6 +47,15 @@ public class Subreddit {
 				
 			}
 		}
+		
+		// Gets true final post ID as using images only contains posts with image thumbnail data
+		if response.childrenDataCount > 1, let data = response.parsedChildData(index: response.childrenDataCount - 1) {
+			finalID = data["name"] as? String
+		}
+		else {
+			finalID = nil
+		}
+		
 		
 		// Gets banner URL if subreddit name is not nil
 		if !name.isEmpty && !isReloadSub {
@@ -102,7 +113,24 @@ public class Subreddit {
 	*/
 	func loadAdditionalPosts(count:Int? = nil) -> Bool {
 		
-		if let id = self[postCount - 1]?.id, id != lastLoadedID {
+		if finalID != nil && finalID != lastLoadedID {
+			
+			let newCount: Int
+			if count == nil {
+				newCount = 25
+			} else {
+				newCount = count!
+			}
+			
+			if let tempSub = api.getSubreddit(Subreddit: name, count: newCount, id: finalID!, type: type, isReloadSub: true) {
+				self.posts.append(contentsOf: tempSub.posts)
+				lastLoadedID = finalID!
+				self.finalID = tempSub.finalID
+			}
+			return true
+			
+		}
+		else if let id = self[postCount - 1]?.id, id != lastLoadedID {
 			if count == nil {
 				if let tempSub = api.getSubreddit(Subreddit: name, id: id, type: type, isReloadSub: true) {
 					self.posts.append(contentsOf: tempSub.posts)

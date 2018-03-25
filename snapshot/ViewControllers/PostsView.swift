@@ -9,35 +9,33 @@
 import UIKit
 import SafariServices
 
-class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate {
+class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate, DarkMode {
 	
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-		guard let indexPath = postCollection.indexPathForItem(at: location) else { return nil }
-		guard let cell = postCollection.cellForItem(at: indexPath) else { return  nil }
-		
-		let newView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MaxImageController") as! MaxViewController
-		
-		newView.subreddit = subreddit
-		newView.index = indexPath.row
-		
-		previewingContext.sourceRect = cell.frame
-		
-		
-		return newView
-	}
+	var darkModeEnabled: Bool = false
 	
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-		viewControllerToCommit.modalTransitionStyle = .crossDissolve
-		viewControllerToCommit.modalPresentationStyle = .overCurrentContext
-		
-		self.tabBarController?.tabBar.isHidden = true
-		
-		present(viewControllerToCommit, animated: true, completion: nil)
+	func darkMode(isOn: Bool) {
+		if isOn {
+			darkModeEnabled = true
+			if postCollection != nil {
+				self.postCollection.reloadData()
+			}
+			self.view.backgroundColor = .black
+			self.postCollection.backgroundColor = .black
+			self.loadingWheel.activityIndicatorViewStyle = .white
+		}
+		else {
+			darkModeEnabled = false
+			if postCollection != nil {
+				self.postCollection.reloadData()
+			}
+			self.view.backgroundColor = .white
+			self.postCollection.backgroundColor = .white
+			self.loadingWheel.activityIndicatorViewStyle = .gray
+		}
 	}
 	
 
     @IBOutlet weak var postCollection: UICollectionView!
-    
     var subredditToLoad = ""
     
     var ncCenter = NotificationCenter.default
@@ -49,6 +47,8 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     var saveURL: String!
     var subreddit: Subreddit!
     var itemCount = 0
+	
+	let loadingWheel = UIActivityIndicatorView(activityIndicatorStyle: .gray)
 	
     override func loadView() {
         super.loadView()
@@ -66,11 +66,15 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 			
             authUser.saveUserToFile()
         }
+		
+		loadingWheel.startAnimating()
+		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingWheel)
     }
     
     //Called when view has finished loading but not yet appeared on screen
     override func viewDidLoad() {
         super.viewDidLoad()
+		darkMode(isOn: darkModeEnabled)
 		
         //Notification for when the user has logged in
         ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
@@ -94,6 +98,17 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         guard let postCell = cell as? PostsViewCell else {
             return cell
         }
+		
+		if darkModeEnabled {
+			postCell.backgroundColor = .black
+			postCell.postTitle.textColor = .white
+			postCell.postTitle.backgroundColor = (UIColor.black).withAlphaComponent(0.75)
+		}
+		else {
+			postCell.backgroundColor = .white
+			postCell.postTitle.textColor = .black
+			postCell.postTitle.backgroundColor = (UIColor.white).withAlphaComponent(0.75)
+		}
         
         guard let post = subreddit[indexPath.row] else {
             return postCell
@@ -193,6 +208,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 				
 				self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
 					self.postCollection.reloadData()
+					self.loadingWheel.stopAnimating()
 				})
 				
 			}
@@ -206,6 +222,29 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 		})
 	}
 	
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		guard let indexPath = postCollection.indexPathForItem(at: location) else { return nil }
+		guard let cell = postCollection.cellForItem(at: indexPath) else { return  nil }
+		
+		let newView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MaxImageController") as! MaxViewController
+		
+		newView.subreddit = subreddit
+		newView.index = indexPath.row
+		
+		previewingContext.sourceRect = cell.frame
+		
+		
+		return newView
+	}
+	
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+		viewControllerToCommit.modalTransitionStyle = .crossDissolve
+		viewControllerToCommit.modalPresentationStyle = .overCurrentContext
+		
+		self.tabBarController?.tabBar.isHidden = true
+		
+		present(viewControllerToCommit, animated: true, completion: nil)
+	}
     
     //Function called by Notification Center when notification notifies that a user has logged in
     @objc func userLoggedInReload() {

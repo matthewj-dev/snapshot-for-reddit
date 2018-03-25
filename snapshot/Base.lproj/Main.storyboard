@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BVL-O6-ECt">
-    <device id="retina5_9" orientation="landscape">
+    <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -16,11 +16,11 @@
             <objects>
                 <viewController storyboardIdentifier="PostsView" title="Navigation View" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" userLabel="Posts View" customClass="PostsView" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="812" height="375"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="y2J-Dp-K2v">
-                                <rect key="frame" x="44" y="0.0" width="724" height="437"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="861"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="6Si-F6-H5j">
                                     <size key="itemSize" width="182" height="136"/>
@@ -85,29 +85,29 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2308" y="-2268"/>
+            <point key="canvasLocation" x="2124" y="-712"/>
         </scene>
         <!--SubredditView-->
         <scene sceneID="UuB-qf-S8q">
             <objects>
                 <viewController storyboardIdentifier="SubredditView" title="Subreddit" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Nxh-hq-s3c" userLabel="SubredditView" customClass="SubredditsView" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ilj-hy-ss3">
-                        <rect key="frame" x="0.0" y="0.0" width="812" height="375"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hjT-ml-GNc">
-                                <rect key="frame" x="44" y="0.0" width="724" height="354"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="subredditListCell" rowHeight="60" id="fpI-iF-40T" customClass="RedditListCell" customModule="snapshot" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="724" height="60"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="subreddit" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fpI-iF-40T" id="1zF-kG-obt">
-                                            <rect key="frame" x="0.0" y="0.0" width="724" height="59.666666666666664"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="59.666666666666664"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTc-w4-PMU">
-                                                    <rect key="frame" x="15" y="11" width="694" height="38"/>
+                                                    <rect key="frame" x="15" y="11" width="257" height="38"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -150,24 +150,24 @@
             <objects>
                 <viewController storyboardIdentifier="MaxImageController" title="MaxImageController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="xEU-fS-sp1" customClass="MaxViewController" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3XG-cn-XJF">
-                        <rect key="frame" x="0.0" y="0.0" width="812" height="375"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pfJ-Bq-3gZ">
-                                <rect key="frame" x="44" y="62" width="724" height="292"/>
+                                <rect key="frame" x="0.0" y="106" width="375" height="672"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RR4-M1-KRW">
-                                <rect key="frame" x="44" y="0.0" width="724" height="21"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" minimumZoomScale="20" maximumZoomScale="20" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="luA-pK-Wrz">
-                                <rect key="frame" x="44" y="21" width="724" height="333"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" minimumZoomScale="20" maximumZoomScale="20" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="luA-pK-Wrz">
+                                <rect key="frame" x="0.0" y="65" width="375" height="713"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ppw-Dw-3DY">
-                                        <rect key="frame" x="0.0" y="0.0" width="724" height="713"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="713"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="713" id="geK-KA-DlI"/>
@@ -222,7 +222,7 @@
                     <tabBarItem key="tabBarItem" title="Posts" image="Posts" selectedImage="Posts" id="EMe-UY-XG9"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="cJb-8T-edp">
-                        <rect key="frame" x="0.0" y="0.0" width="812" height="32"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -257,7 +257,7 @@
             <objects>
                 <viewController title="User view" id="bc3-2f-1x7" customClass="UserViewController" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="o64-nR-H38">
-                        <rect key="frame" x="0.0" y="0.0" width="812" height="375"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="4rO-Ev-Lc2"/>
@@ -275,7 +275,7 @@
                     <tabBarItem key="tabBarItem" title="User" image="User" id="iDh-2U-0aK"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NIg-dP-h3J">
-                        <rect key="frame" x="0.0" y="0.0" width="812" height="32"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -292,7 +292,7 @@
             <objects>
                 <viewController title="Settings View" id="ALa-zi-XGG" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="PuP-mm-YbJ">
-                        <rect key="frame" x="0.0" y="0.0" width="812" height="375"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="nMs-3b-q77"/>
@@ -310,7 +310,7 @@
                     <tabBarItem key="tabBarItem" title="Settings" image="settings" id="OOW-y7-rWh"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="04o-1c-DDC">
-                        <rect key="frame" x="0.0" y="0.0" width="812" height="32"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

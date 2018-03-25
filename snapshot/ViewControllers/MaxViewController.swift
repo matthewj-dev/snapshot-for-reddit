@@ -66,6 +66,7 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 		scrollView.setZoomScale(1.0, animated: false)
+		playerLayer.removeFromSuperlayer()
 		
         if let image = subreddit[index]?.preview {
             imageToLoad = image
@@ -97,10 +98,14 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
 				print("Nothing special about: \(subreddit[index]?.content)")
 			}
         }
-        else {
-            return
+        else if let image = subreddit[index]?.thumbnail {
+			imageToLoad = image
+			postTitle.text = subreddit[index]?.title
         }
-        playerLayer.removeFromSuperlayer()
+		else {
+			return
+		}
+		
 		self.view.addSubview(popup)
         DispatchQueue.global().async {
             do{

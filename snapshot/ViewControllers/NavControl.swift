@@ -10,18 +10,51 @@ import UIKit
 
 class NavControl: UINavigationController {
 
+	let center = NotificationCenter.default
+	
 	override func loadView() {
 		super.loadView()
 		
-		let postsView = storyboard?.instantiateViewController(withIdentifier: "PostsView")
-		let subsView = storyboard?.instantiateViewController(withIdentifier: "SubredditView")
+		center.addObserver(self, selector: #selector(toggleDarkMode), name: Notification.Name.UIScreenBrightnessDidChange, object: nil)
 		
-		subsView?.navigationItem.title = "Subreddits"
+		let postsView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
+		let subsView = storyboard?.instantiateViewController(withIdentifier: "SubredditView") as! SubredditsView
 		
-		self.viewControllers = [subsView!, postsView!]
+		subsView.navigationItem.title = "Subreddits"
+		
+		self.viewControllers = [subsView, postsView]
 	}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		toggleDarkMode()
     }
+	
+	var darkModeEnabled = false
+	@objc func toggleDarkMode() {
+		
+		if UIScreen.main.brightness < 0.20 && !darkModeEnabled {
+			darkModeEnabled = true
+			self.navigationBar.barStyle = .black
+			self.tabBarController?.tabBar.barStyle = .black
+			for i in self.viewControllers {
+				if i is DarkMode {
+					print("Toggled Dark Mode On")
+					(i as! DarkMode).darkMode(isOn: true)
+				}
+			}
+		}
+		else if darkModeEnabled && UIScreen.main.brightness >= 0.20 {
+			darkModeEnabled = false
+			self.navigationBar.barStyle = .default
+			self.tabBarController?.tabBar.barStyle = .default
+			for i in self.viewControllers {
+				if i is DarkMode {
+					print("Toggled Dark Mode off")
+					(i as! DarkMode).darkMode(isOn: false)
+				}
+			}
+		}
+	}
+	
 }

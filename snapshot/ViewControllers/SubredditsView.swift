@@ -8,7 +8,29 @@
 
 import UIKit
 
-class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UIViewControllerPreviewingDelegate {
+class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UIViewControllerPreviewingDelegate, DarkMode {
+	
+	var darkModeEnabled: Bool = false
+	
+	func darkMode(isOn: Bool) {
+		if isOn {
+			darkModeEnabled = true
+			if self.redditTable != nil {
+				self.redditTable.reloadData()
+				self.redditTable.backgroundColor = .black
+			}
+			self.view.backgroundColor = .black
+		}
+		else {
+			darkModeEnabled = false
+			if self.redditTable != nil {
+				self.redditTable.reloadData()
+				self.redditTable.backgroundColor = .white
+			}
+			self.view.backgroundColor = .white
+			
+		}
+	}
 	
     @IBOutlet weak var redditTable: UITableView!
     
@@ -43,6 +65,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		darkMode(isOn: darkModeEnabled)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -52,6 +75,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Creates a new view based on the cell selected and then pushed onto the navigation controller
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
+		newView.darkModeEnabled = self.darkModeEnabled
         if indexPath.section == 1 {
             newView.subredditToLoad = subreddits[indexPath.row]
         } else {
@@ -68,6 +92,17 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Creates and returns each cell of the table
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = redditTable.dequeueReusableCell(withIdentifier: "subredditListCell") as! RedditListCell
+		
+		if darkModeEnabled {
+			cell.backgroundColor = .black
+			cell.subredditName.textColor = .white
+			cell.selectionStyle = .gray
+		}
+		else {
+			cell.backgroundColor = .white
+			cell.subredditName.textColor = .black
+			cell.selectionStyle = .default
+		}
 		
 		if indexPath.section == 0 {
 			switch indexPath.row {
@@ -96,6 +131,19 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         return ""
     }
+	
+	// Allows editing of the view that are the headers of the tableview
+	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		if darkModeEnabled {
+			view.tintColor = .black
+			(view as! UITableViewHeaderFooterView).textLabel?.textColor = UIColor(iOSColor: .iOSBlue)
+		}
+		else {
+			(view as! UITableViewHeaderFooterView).tintColor = .white
+			(view as! UITableViewHeaderFooterView).textLabel?.textColor = .black
+		}
+		
+	}
     
     //Tells the table the height of the row
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -170,6 +218,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		}
 		
 		let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
+		newView.darkModeEnabled = self.darkModeEnabled
 		if indexPath.section == 1 {
 			newView.subredditToLoad = subreddits[indexPath.row]
 		} else {

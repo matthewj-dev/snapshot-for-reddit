@@ -38,6 +38,7 @@ class Popup: UIView {
 		self.contentView.layer.cornerRadius = 10
 		
 		addSubview(self.contentView)
+		self.frame = self.contentView.frame
 	}
 	
 }

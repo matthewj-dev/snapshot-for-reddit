@@ -33,7 +33,7 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
     
     override func loadView() {
         super.loadView()
-		popup = Popup(frame: self.view.bounds)
+		popup = Popup()
 		
 		scrollView.minimumZoomScale = 1
 		scrollView.delegate = self
@@ -52,7 +52,7 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
         swippyRight.direction = .right
         
         //Adds gestures to the image and views
-		popup.addGestureRecognizer(tappy)
+		popup.contentView.addGestureRecognizer(tappy)
         self.view.addGestureRecognizer(tappy)
 		self.player.addGestureRecognizer(tappy)
 		
@@ -68,14 +68,19 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
 		scrollView.setZoomScale(1.0, animated: false)
 		playerLayer.removeFromSuperlayer()
 		
+		self.view.addSubview(popup)
+		
         if let image = subreddit[index]?.preview {
             imageToLoad = image
             postTitle.text = subreddit[index]?.title
-            //Switches URL to load if it is of certain types
-            if let contentURL = subreddit[index]?.content, ["png","jpg","gif"].contains(contentURL.pathExtension) {
+			
+            	// Switches URL to load images if it is of certain types
+            if let contentURL = subreddit[index]?.content, ["png","jpg","gif", "jpeg"].contains(contentURL.pathExtension) {
                 print(contentURL.pathExtension)
                 imageToLoad = contentURL
             }
+				
+				// Loads Video types into an AVplayer layer
 			else if let contentURL = subreddit[index]?.content, ["mp4","webm","gifv"].contains(contentURL.pathExtension) {
 				print(contentURL.pathExtension)
 				var videoURL = contentURL
@@ -91,8 +96,26 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
 				self.view.layer.addSublayer(playerLayer)
 				
 				avPlayer.play()
-				
+				self.popup.removeFromSuperview()
 				return
+			}
+				
+				// Gets and plays videos hosted by Reddit itself in an AVplayer layer
+			else if subreddit[index]?.content != nil, (subreddit[index]?.content?.absoluteString.contains("v.redd.it"))! {
+				print("You are here")
+				if let secureMedia = subreddit[index]?.data["secure_media"] as? [String:Any], let redditVideo = secureMedia["reddit_video"] as? [String:Any], let videoString = redditVideo["hls_url"] as? String, let videoURL = URL(string: videoString) {
+					self.maxView.image = nil
+					print(videoURL)
+					avPlayer = AVPlayer(url: videoURL)
+					playerLayer = AVPlayerLayer(player: avPlayer)
+					playerLayer.frame = self.player.frame
+					
+					self.view.layer.addSublayer(playerLayer)
+					
+					avPlayer.play()
+					self.popup.removeFromSuperview()
+					return
+				}
 			}
 			else {
 				print("Nothing special about: \(subreddit[index]?.content)")
@@ -106,7 +129,6 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
 			return
 		}
 		
-		self.view.addSubview(popup)
         DispatchQueue.global().async {
             do{
                 let imageData = try Data(contentsOf: self.imageToLoad)
@@ -136,6 +158,7 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
 		playerLayer.frame = player.frame
 		scrollView.contentOffset = CGPoint(x: 0, y: 0)
 		imageHeight.constant = scrollView.frame.height
+		popup.frame.origin = self.view.center
 	}
 	
 	@objc func longPress() {

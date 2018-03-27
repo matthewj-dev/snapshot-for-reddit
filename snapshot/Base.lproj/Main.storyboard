@@ -99,7 +99,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="778"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="subredditListCell" rowHeight="60" id="fpI-iF-40T" customClass="RedditListCell" customModule="snapshot" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="subredditListCell" rowHeight="60" id="fpI-iF-40T" customClass="RedditListCell" customModule="snapshot" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="subreddit" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fpI-iF-40T" id="1zF-kG-obt">
@@ -107,7 +107,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTc-w4-PMU">
-                                                    <rect key="frame" x="15" y="11" width="257" height="38"/>
+                                                    <rect key="frame" x="15" y="11" width="345" height="38"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -218,7 +218,7 @@
         <!--Posts-->
         <scene sceneID="egU-N5-dQV">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Txe-6C-52n" customClass="NavControl" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Txe-6C-52n" customClass="PostsNavigationController" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Posts" image="Posts" selectedImage="Posts" id="EMe-UY-XG9"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="cJb-8T-edp">
@@ -231,10 +231,10 @@
             </objects>
             <point key="canvasLocation" x="476" y="-711"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Tab Bar Control-->
         <scene sceneID="rdk-42-fwU">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="BVL-O6-ECt" sceneMemberID="viewController">
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="BVL-O6-ECt" customClass="TabBarControl" customModule="snapshot" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="ZUn-Gi-XZ6"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="1MS-tj-Rvt">

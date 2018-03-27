@@ -9,13 +9,18 @@
 import UIKit
 import SafariServices
 
-class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate, DarkMode {
+class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate, DarkMode, RedditView {
+	
+	func redditUserChanged(loggedIn: Bool) {
+		loadSubredditIntoCollectionView()
+	}
 	
 	var darkModeEnabled: Bool = false
 	
 	func darkMode(isOn: Bool) {
+		darkModeEnabled = isOn
+		
 		if isOn {
-			darkModeEnabled = true
 			if postCollection != nil {
 				self.postCollection.reloadData()
 			}
@@ -24,7 +29,6 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 			self.loadingWheel.activityIndicatorViewStyle = .white
 		}
 		else {
-			darkModeEnabled = false
 			if postCollection != nil {
 				self.postCollection.reloadData()
 			}
@@ -39,12 +43,10 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     var subredditToLoad = ""
     
     var ncCenter = NotificationCenter.default
-    let manager = FileManager.default
     
     var redditAPI = RedditHandler()
     var imageCache = ImageCacher()
-    
-    var saveURL: String!
+	
     var subreddit: Subreddit!
     var itemCount = 0
 	
@@ -53,19 +55,18 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     override func loadView() {
         super.loadView()
 		
+		// Gets the global API from the TabBar Controller
+		if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
+			redditAPI = api
+		}
+		
 		registerForPreviewing(with: self, sourceView: self.postCollection)
 		
-        saveURL = (manager.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
-        if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-            redditAPI.authenticatedUser = authUser
-			if self.tabBarController != nil {
-				self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-			}
-			
-            authUser.saveUserToFile()
-        }
+		if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
+			redditAPI = api
+		}
 		
 		loadingWheel.startAnimating()
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingWheel)
@@ -74,17 +75,16 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     //Called when view has finished loading but not yet appeared on screen
     override func viewDidLoad() {
         super.viewDidLoad()
+		loadSubredditIntoCollectionView()
+		
 		darkMode(isOn: darkModeEnabled)
 		
-        //Notification for when the user has logged in
-        ncCenter.addObserver(self, selector: #selector(userLoggedInReload), name: Notification.Name.init(rawValue: "userLogin"), object: nil)
-        
         //Notification for when the user dismisses the full screen image viewer
         ncCenter.addObserver(self, selector: #selector(bringBackTab), name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
         
         postCollection.delegate = self
         postCollection.dataSource = self
-		loadSubredditIntoCollectionView()
+		
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -245,20 +245,9 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 		
 		present(viewControllerToCommit, animated: true, completion: nil)
 	}
-    
-    //Function called by Notification Center when notification notifies that a user has logged in
-    @objc func userLoggedInReload() {
-        
-        if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-            redditAPI.authenticatedUser = authUser
-        }
-    
-        loadSubredditIntoCollectionView()
-    }
-    
+	
     @objc func bringBackTab() {
         self.tabBarController?.tabBar.isHidden = false
-
     }
 }
 

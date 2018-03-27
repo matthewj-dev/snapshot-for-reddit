@@ -8,27 +8,39 @@
 
 import UIKit
 
-class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UIViewControllerPreviewingDelegate, DarkMode {
+class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UIViewControllerPreviewingDelegate, DarkMode, RedditView {
+	
+	func redditUserChanged(loggedIn: Bool) {
+		self.subreddits = [String]()
+		if !loggedIn {
+			self.redditTable.deleteSections(IndexSet(integer: 1), with: .automatic)
+		}
+		self.repopulateSubTable()
+	}
 	
 	var darkModeEnabled: Bool = false
 	
 	func darkMode(isOn: Bool) {
 		if isOn {
-			darkModeEnabled = true
-			if self.redditTable != nil {
+			self.darkModeEnabled = true
+			if self.redditTable != nil, self.navigationItem.searchController != nil {
 				self.redditTable.reloadData()
 				self.redditTable.backgroundColor = .black
+				self.navigationItem.searchController!.searchBar.keyboardAppearance = .dark
 			}
+			
 			self.view.backgroundColor = .black
 		}
 		else {
-			darkModeEnabled = false
-			if self.redditTable != nil {
+			self.darkModeEnabled = false
+			if self.redditTable != nil, self.navigationItem.searchController != nil {
 				self.redditTable.reloadData()
 				self.redditTable.backgroundColor = .white
+				self.navigationItem.searchController!.searchBar.keyboardAppearance = .default
 			}
-			self.view.backgroundColor = .white
 			
+			self.view.backgroundColor = .white
+
 		}
 	}
 	
@@ -40,6 +52,11 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     override func loadView() {
         super.loadView()
+		
+		// Gets the global API from the TabBar Controller
+		if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
+			redditAPI = api
+		}
 		
 		// Creates the Search controller that is used as the 'Go to Subreddit' option
 		let searchy = UISearchController(searchResultsController: nil)
@@ -74,17 +91,8 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Creates a new view based on the cell selected and then pushed onto the navigation controller
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
-		newView.darkModeEnabled = self.darkModeEnabled
-        if indexPath.section == 1 {
-            newView.subredditToLoad = subreddits[indexPath.row]
-        } else {
-			switch indexPath.row {
-			case 0: newView.subredditToLoad = ""
-			case 1: newView.subredditToLoad = "Popular"
-			default: newView.subredditToLoad = ""
-			}
-        }
+        let newView = loadPostViewForPush(name: (redditTable.cellForRow(at: indexPath) as! RedditListCell).subredditName.text)
+		
         self.navigationController?.pushViewController(newView, animated: true)
         self.redditTable.deselectRow(at: indexPath, animated: true)
     }
@@ -135,16 +143,16 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 	// Allows editing of the view that are the headers of the tableview
 	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 		if darkModeEnabled {
-			view.tintColor = .black
+			view.tintColor = UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1)
 			(view as! UITableViewHeaderFooterView).textLabel?.textColor = UIColor(iOSColor: .iOSBlue)
 		}
 		else {
-			(view as! UITableViewHeaderFooterView).tintColor = .white
+			(view as! UITableViewHeaderFooterView).tintColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1)
 			(view as! UITableViewHeaderFooterView).textLabel?.textColor = .black
 		}
 		
 	}
-    
+	
     //Tells the table the height of the row
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 25
@@ -163,45 +171,62 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Tells the tableview how many sections the tableview will contain
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+		if subreddits.count != 0 {
+			return 2
+		}
+        return 1
     }
     
     //repopulates the subreddit table
     @objc func repopulateSubTable(){
-        
-        //Path to check for userData file
-        let saveURL = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
-        
-        if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-            redditAPI.authenticatedUser = authUser
-            self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-            authUser.saveUserToFile()
-            
-            authUser.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
-                self.subreddits = subs
-                
-                // Starts updates onto the TableView
-                self.redditTable.beginUpdates()
-                
-                for i in 0..<self.subreddits.count {
-                    // Inserts a row for each Subreddit in list
-                    self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
-                }
-                // Informs the tableview that the updates have concluded
-                self.redditTable.endUpdates()
-                
-            })
-        }
+		if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
+			redditAPI = api
+			
+			if redditAPI.authenticatedUser != nil {
+				redditAPI.authenticatedUser!.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
+					self.subreddits = subs
+
+					// Starts updates onto the TableView
+					self.redditTable.beginUpdates()
+					
+					if self.redditTable.numberOfSections != 2 {
+						self.redditTable.insertSections(IndexSet(integer: 1), with: .right)
+					}
+					for i in 0..<self.subreddits.count {
+						// Inserts a row for each Subreddit in list
+						self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
+					}
+					// Informs the tableview that the updates have concluded
+					self.redditTable.endUpdates()
+					
+				})
+			}
+		}
     }
 	
 	// Function called when the 'continue' button is pressed while editing the text of the searchbar
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 		self.navigationItem.searchController?.dismiss(animated: true, completion: nil)
-		let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
-		newView.subredditToLoad = searchBar.text!
+		let newView = loadPostViewForPush(name: self.navigationItem.searchController?.searchBar.text)
+		
 		self.navigationController?.pushViewController(newView, animated: true)
 		searchBar.text = ""
 		
+	}
+	
+	// Creates a new PostView View with a String passed by
+	func loadPostViewForPush(name: String?) -> PostsView {
+		let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
+		if name == "Home" || name == nil {
+			newView.subredditToLoad = ""
+		}
+		else {
+			newView.subredditToLoad = name!
+		}
+		newView.redditAPI = self.redditAPI
+		newView.darkMode(isOn: self.darkModeEnabled)
+		
+		return newView
 	}
 	
 	// Function called when previewing a view with 3D Touch
@@ -213,17 +238,11 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		}
 		
 		// Uses the indexpath mentioned above to reference the cell
-		guard let cell = redditTable.cellForRow(at: indexPath) else {
+		guard let cell = redditTable.cellForRow(at: indexPath) as? RedditListCell else {
 			return nil
 		}
 		
-		let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
-		newView.darkModeEnabled = self.darkModeEnabled
-		if indexPath.section == 1 {
-			newView.subredditToLoad = subreddits[indexPath.row]
-		} else {
-			newView.subredditToLoad = ""
-		}
+		let newView = loadPostViewForPush(name: cell.subredditName.text)
 		
 		self.redditTable.deselectRow(at: indexPath, animated: true)
 		

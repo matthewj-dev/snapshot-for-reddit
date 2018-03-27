@@ -1,3 +1,11 @@
+//
+//  RedditHandler.swift
+//  snapshot
+//
+//  Created by Hunter Forbus on 3/15/18.
+//  Copyright © 2018 Lapis Software. All rights reserved.
+//
+
 import Foundation
 
 /**

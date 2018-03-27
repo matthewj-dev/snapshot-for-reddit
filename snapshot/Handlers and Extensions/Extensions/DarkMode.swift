@@ -6,8 +6,6 @@
 //  Copyright © 2018 Lapis Software. All rights reserved.
 //
 
-import Foundation
-
 protocol DarkMode {
 	
 	var darkModeEnabled: Bool {get set}

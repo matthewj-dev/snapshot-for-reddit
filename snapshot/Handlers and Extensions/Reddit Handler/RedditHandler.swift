@@ -15,16 +15,16 @@ class RedditHandler {
     var authenticatedUser: AuthenticatedUser? = nil
     
     /**
-	Sets an authenticated user to be used with Reddit API Requests
-	- Parameter authenticatedUser: Authenticated user to be used for Reddit Requests
+    Sets an authenticated user to be used with Reddit API Requests
+    - Parameter authenticatedUser: Authenticated user to be used for Reddit Requests
      */
     init (authenticatedUser: AuthenticatedUser? = nil) {
         self.authenticatedUser = authenticatedUser
     }
     
     /**
-	Creates a URL request for an access token using
-	*/
+    Creates a URL request for an access token using
+    */
     internal func getAccessTokenRequest(grantType: String, grantLogic: String) -> URLRequest {
         // http request for oauth
         var request = URLRequest(url: URL(string: "https://www.reddit.com/api/v1/access_token")!)
@@ -49,7 +49,7 @@ class RedditHandler {
     func getAuthenticatedUser(authCode: String) -> AuthenticatedUser? {
         
         var authData: [String:Any]? = nil
-		var responseCode = 0
+        var responseCode = 0
         let request = getAccessTokenRequest(grantType: "authorization_code", grantLogic: "code=\(authCode)")
         
         //Creates and enters DispatchGroup
@@ -57,12 +57,12 @@ class RedditHandler {
         group.enter()
         
         let task = URLSession.shared.dataTask(with: request) {data, response, error in
-			print((response as? HTTPURLResponse)?.statusCode as Any)
+            print((response as? HTTPURLResponse)?.statusCode as Any)
             if data != nil, error == nil {
                 do {
                     if let jsonData = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]{
                         authData = jsonData
-						responseCode = (response! as! HTTPURLResponse).statusCode
+                        responseCode = (response! as! HTTPURLResponse).statusCode
                     }
                 }
                 catch {
@@ -70,7 +70,7 @@ class RedditHandler {
                 }
             }  
             else {
-				print(error!)
+                print(error!)
             }
             
             //Leave DispatchGroup once the callback has concluded
@@ -85,7 +85,7 @@ class RedditHandler {
         print("Group Exited")
         if authData != nil {
             do {
-				let authUser = try AuthenticatedUser(api: self, authResponse: RedditResponse(jsonReturnData: authData!, httpResponseCode: responseCode))
+                let authUser = try AuthenticatedUser(api: self, authResponse: RedditResponse(jsonReturnData: authData!, httpResponseCode: responseCode))
                 return authUser
             }
             catch {
@@ -110,11 +110,11 @@ class RedditHandler {
         responseGroup.enter()
         
         let responseTask = URLSession.shared.dataTask(with: request) {data, response, error in
-			print((response as? HTTPURLResponse)?.statusCode as Any)
+            print((response as? HTTPURLResponse)?.statusCode as Any)
             if data != nil, error == nil {
                 do {
                     if let jsonData = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as? [String:Any]{
-						redditResponse = RedditResponse(jsonReturnData: jsonData, httpResponseCode: (response as! HTTPURLResponse).statusCode)
+                        redditResponse = RedditResponse(jsonReturnData: jsonData, httpResponseCode: (response as! HTTPURLResponse).statusCode)
                     }
                 }
                 catch {
@@ -122,7 +122,7 @@ class RedditHandler {
                 }
             }
             else {
-				print(error!)
+                print(error!)
             }
             
             //Leave DispatchGroup once the callback has concluded
@@ -144,15 +144,15 @@ class RedditHandler {
      */
     func getRedditResponse(urlSuffix: String) -> RedditResponse? {
         let url: URL
-		var urlSuffix = urlSuffix
-		
-		if urlSuffix.contains("?") {
-			urlSuffix += "&raw_json=1"
-		}
-		else {
-			urlSuffix += "?raw_json=1"
-		}
-		
+        var urlSuffix = urlSuffix
+        
+        if urlSuffix.contains("?") {
+            urlSuffix += "&raw_json=1"
+        }
+        else {
+            urlSuffix += "?raw_json=1"
+        }
+        
         if authenticatedUser != nil {
             if !authenticatedUser!.tokenIsExpired() || authenticatedUser!.refreshAccessToken() {
                 url = URL(string: "https://oauth.reddit.com" + urlSuffix)!
@@ -200,7 +200,7 @@ class RedditHandler {
             guard let response = getRedditResponse(urlSuffix: suffix) else {
                 return nil
             }
-			return try Subreddit(api: self, response: response, name: name, type: type, isReloadSub: isReloadSub)
+            return try Subreddit(api: self, response: response, name: name, type: type, isReloadSub: isReloadSub)
         }
         catch {
             print(error)
@@ -236,7 +236,7 @@ class RedditHandler {
             return nil
         }
         do {
-			return try RedditUser.init(api: self, aboutResponse: response, postsResponse: postsResponse)
+            return try RedditUser.init(api: self, aboutResponse: response, postsResponse: postsResponse)
         }
         catch {
             print(error)

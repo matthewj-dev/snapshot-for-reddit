@@ -43,6 +43,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		darkMode(isOn: darkModeEnabled)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -51,12 +52,8 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Creates a new view based on the cell selected and then pushed onto the navigation controller
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let newView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
-        if indexPath.section == 1 {
-            newView.subredditToLoad = subreddits[indexPath.row]
-        } else {
-            newView.subredditToLoad = ""
-        }
+        let newView = loadPostViewForPush(name: (redditTable.cellForRow(at: indexPath) as! RedditListCell).subredditName.text)
+		
         self.navigationController?.pushViewController(newView, animated: true)
         self.redditTable.deselectRow(at: indexPath, animated: true)
     }
@@ -64,13 +61,31 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Creates and returns each cell of the table
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = redditTable.dequeueReusableCell(withIdentifier: "subredditListCell") as! RedditListCell
-        
+		
+		if darkModeEnabled {
+			cell.backgroundColor = .black
+			cell.subredditName.textColor = .white
+			cell.selectionStyle = .gray
+		}
+		else {
+			cell.backgroundColor = .white
+			cell.subredditName.textColor = .black
+			cell.selectionStyle = .default
+		}
+		
+		if indexPath.section == 0 {
+			switch indexPath.row {
+			case 0: cell.subredditName.text = "Home"
+			case 1: cell.subredditName.text = "Popular"
+			default: cell.subredditName.text = "Home"
+			}
+		}
+		
         if indexPath.section == 1 {
             cell.subredditName.text = subreddits[indexPath.row]
             return cell
         }
-        
-        cell.subredditName.text = "Home"
+		
         return cell
         
     }
@@ -85,7 +100,20 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         return ""
     }
-    
+	
+	// Allows editing of the view that are the headers of the tableview
+	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		if darkModeEnabled {
+			view.tintColor = UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1)
+			(view as! UITableViewHeaderFooterView).textLabel?.textColor = UIColor(iOSColor: .iOSBlue)
+		}
+		else {
+			(view as! UITableViewHeaderFooterView).tintColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1)
+			(view as! UITableViewHeaderFooterView).textLabel?.textColor = .black
+		}
+		
+	}
+	
     //Tells the table the height of the row
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 25
@@ -94,7 +122,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Tells the tableview how many rows are in a section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return 1
+            return 2
         }
         if section == 1 {
             return subreddits.count
@@ -104,35 +132,37 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Tells the tableview how many sections the tableview will contain
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+		if subreddits.count != 0 {
+			return 2
+		}
+        return 1
     }
     
     //repopulates the subreddit table
     @objc func repopulateSubTable(){
-        
-        //Path to check for userData file
-        let saveURL = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
-        
-        if let authUser = NSKeyedUnarchiver.unarchiveObject(withFile: saveURL) as? AuthenticatedUser {
-            redditAPI.authenticatedUser = authUser
-            self.tabBarController!.tabBar.items![1].title = redditAPI.authenticatedUser?.name
-            authUser.saveUserToFile()
-            
-            authUser.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
-                self.subreddits = subs
-                
-                // Starts updates onto the TableView
-                self.redditTable.beginUpdates()
-                
-                for i in 0..<self.subreddits.count {
-                    // Inserts a row for each Subreddit in list
-                    self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
-                }
-                // Informs the tableview that the updates have concluded
-                self.redditTable.endUpdates()
-                
-            })
-        }
+		if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
+			redditAPI = api
+			
+			if redditAPI.authenticatedUser != nil {
+				redditAPI.authenticatedUser!.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
+					self.subreddits = subs
+
+					// Starts updates onto the TableView
+					self.redditTable.beginUpdates()
+					
+					if self.redditTable.numberOfSections != 2 {
+						self.redditTable.insertSections(IndexSet(integer: 1), with: .right)
+					}
+					for i in 0..<self.subreddits.count {
+						// Inserts a row for each Subreddit in list
+						self.redditTable.insertRows(at: [IndexPath(row: i, section: 1)], with: .top)
+					}
+					// Informs the tableview that the updates have concluded
+					self.redditTable.endUpdates()
+					
+				})
+			}
+		}
     }
     
     // Function called when the 'continue' button is pressed while editing the text of the searchbar

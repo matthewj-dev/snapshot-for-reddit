@@ -12,11 +12,13 @@ import ImageIO
 import AVFoundation
 import AVKit
 
-class MaxViewController: UIViewController {
+class MaxViewController: UIViewController, UIScrollViewDelegate {
 
     @IBOutlet var maxView: UIImageView!
     @IBOutlet weak var postTitle: UILabel!
 	@IBOutlet weak var player: UIView!
+	@IBOutlet weak var scrollView: UIScrollView!
+	@IBOutlet weak var imageHeight: NSLayoutConstraint!
 	
     var ncObject = NotificationCenter.default
 	
@@ -31,7 +33,10 @@ class MaxViewController: UIViewController {
     
     override func loadView() {
         super.loadView()
-		popup = Popup(frame: self.view.bounds)
+		popup = Popup()
+		
+		scrollView.minimumZoomScale = 1
+		scrollView.delegate = self
 		
         //Creates gesture to dismiss view
         let tappy = UITapGestureRecognizer(target: self, action: #selector(dismissView))
@@ -64,11 +69,14 @@ class MaxViewController: UIViewController {
         if let image = subreddit[index]?.preview {
             imageToLoad = image
             postTitle.text = subreddit[index]?.title
-            //Switches URL to load if it is of certain types
-            if let contentURL = subreddit[index]?.content, ["png","jpg","gif"].contains(contentURL.pathExtension) {
+			
+            	// Switches URL to load images if it is of certain types
+            if let contentURL = subreddit[index]?.content, ["png","jpg","gif", "jpeg"].contains(contentURL.pathExtension) {
                 print(contentURL.pathExtension)
                 imageToLoad = contentURL
             }
+				
+				// Loads Video types into an AVplayer layer
 			else if let contentURL = subreddit[index]?.content, ["mp4","webm","gifv"].contains(contentURL.pathExtension) {
 				print(contentURL.pathExtension)
 				var videoURL = contentURL
@@ -84,15 +92,34 @@ class MaxViewController: UIViewController {
 				self.view.layer.addSublayer(playerLayer)
 				
 				avPlayer.play()
-				
+				self.popup.removeFromSuperview()
 				return
+			}
+				
+				// Gets and plays videos hosted by Reddit itself in an AVplayer layer
+			else if subreddit[index]?.content != nil, (subreddit[index]?.content?.absoluteString.contains("v.redd.it"))! {
+				print("You are here")
+				if let secureMedia = subreddit[index]?.data["secure_media"] as? [String:Any], let redditVideo = secureMedia["reddit_video"] as? [String:Any], let videoString = redditVideo["hls_url"] as? String, let videoURL = URL(string: videoString) {
+					self.maxView.image = nil
+					print(videoURL)
+					avPlayer = AVPlayer(url: videoURL)
+					playerLayer = AVPlayerLayer(player: avPlayer)
+					playerLayer.frame = self.player.frame
+					
+					self.view.layer.addSublayer(playerLayer)
+					
+					avPlayer.play()
+					self.popup.removeFromSuperview()
+					return
+				}
 			}
 			else {
 				print("Nothing special about: \(subreddit[index]?.content)")
 			}
         }
-        else {
-            return
+        else if let image = subreddit[index]?.thumbnail {
+			imageToLoad = image
+			postTitle.text = subreddit[index]?.title
         }
         playerLayer.removeFromSuperlayer()
         self.view.addSubview(popup)
@@ -123,6 +150,9 @@ class MaxViewController: UIViewController {
 	
 	override func viewDidLayoutSubviews() {
 		playerLayer.frame = player.frame
+		scrollView.contentOffset = CGPoint(x: 0, y: 0)
+		imageHeight.constant = scrollView.frame.height
+		popup.frame.origin = self.view.center
 	}
 	
 	@objc func longPress() {
@@ -168,7 +198,26 @@ class MaxViewController: UIViewController {
 		// Presents first UIAlertController
 		self.present(alert, animated: true, completion: nil)
 	}
-    
+	
+	
+	let taptic = UINotificationFeedbackGenerator()
+	var isZoomedIn = true
+	func scrollViewDidZoom(_ scrollView: UIScrollView) {
+		taptic.prepare()
+		
+		if scrollView.zoomScale == scrollView.minimumZoomScale && isZoomedIn == false {
+			taptic.notificationOccurred(.success)
+			isZoomedIn = true
+		}
+		else if scrollView.zoomScale > scrollView.minimumZoomScale {
+			isZoomedIn = false
+		}
+	}
+	
+	func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+		return self.maxView
+	}
+	
     @objc func dismissView() {
         ncObject.post(name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
         self.dismiss(animated: true, completion: nil)
@@ -187,4 +236,5 @@ class MaxViewController: UIViewController {
             self.viewDidLoad()
         }
     }
+	
 }

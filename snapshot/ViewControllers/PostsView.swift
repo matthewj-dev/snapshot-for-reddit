@@ -7,23 +7,51 @@
 //
 
 import UIKit
+import SafariServices
 
-class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate, DarkMode, RedditView {
+	
+	func redditUserChanged(loggedIn: Bool) {
+		loadSubredditIntoCollectionView()
+	}
+	
+	var darkModeEnabled: Bool = false
+	
+	func darkMode(isOn: Bool) {
+		darkModeEnabled = isOn
+		
+		if isOn {
+			if postCollection != nil {
+				self.postCollection.reloadData()
+			}
+			self.view.backgroundColor = .black
+			self.postCollection.backgroundColor = .black
+			self.loadingWheel.activityIndicatorViewStyle = .white
+		}
+		else {
+			if postCollection != nil {
+				self.postCollection.reloadData()
+			}
+			self.view.backgroundColor = .white
+			self.postCollection.backgroundColor = .white
+			self.loadingWheel.activityIndicatorViewStyle = .gray
+		}
+	}
+	
 
     @IBOutlet weak var postCollection: UICollectionView!
-    
     var subredditToLoad = ""
     
     var ncCenter = NotificationCenter.default
-    let manager = FileManager.default
     
     var redditAPI = RedditHandler()
     var imageCache = ImageCacher()
-    
-    var saveURL: String!
+	
     var subreddit: Subreddit!
     var itemCount = 0
-    
+	
+	let loadingWheel = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+	
     override func loadView() {
         super.loadView()
         
@@ -66,6 +94,17 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         guard let postCell = cell as? PostsViewCell else {
             return cell
         }
+		
+		if darkModeEnabled {
+			postCell.backgroundColor = .black
+			postCell.postTitle.textColor = .white
+			postCell.postTitle.backgroundColor = (UIColor.black).withAlphaComponent(0.75)
+		}
+		else {
+			postCell.backgroundColor = .white
+			postCell.postTitle.textColor = .black
+			postCell.postTitle.backgroundColor = (UIColor.white).withAlphaComponent(0.75)
+		}
         
         guard let post = subreddit[indexPath.row] else {
             return postCell
@@ -191,7 +230,6 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     @objc func bringBackTab() {
         self.tabBarController?.tabBar.isHidden = false
-
     }
 }
 

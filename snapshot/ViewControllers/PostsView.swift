@@ -11,6 +11,8 @@ import SafariServices
 
 class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate, DarkMode, RedditView {
     
+    var settingsBoi: SettingsHandler!
+    
     func redditUserChanged(loggedIn: Bool) {
         loadSubredditIntoCollectionView()
     }
@@ -54,6 +56,13 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     override func loadView() {
         super.loadView()
+        
+        if let tabBar = self.tabBarController as? TabBarControl {
+            settingsBoi = tabBar.settings
+        }
+        else {
+            settingsBoi = SettingsHandler()
+        }
         
         // Gets the global API from the TabBar Controller
         if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
@@ -141,6 +150,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         newView.index = indexPath.row
         newView.modalTransitionStyle = .crossDissolve
         newView.modalPresentationStyle = .overCurrentContext
+        newView.settingGurl = settingsBoi
         
         self.tabBarController?.tabBar.isHidden = true
         
@@ -230,7 +240,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
         newView.subreddit = subreddit
         newView.index = indexPath.row
-        
+        newView.settingGurl = settingsBoi
         previewingContext.sourceRect = cell.frame
         
         

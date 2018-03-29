@@ -21,6 +21,7 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var imageHeight: NSLayoutConstraint!
     
     var ncObject = NotificationCenter.default
+    var settingGurl: SettingsHandler!
     
     var avPlayer: AVPlayer!
     var playerLayer = AVPlayerLayer()
@@ -86,7 +87,7 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
             postTitle.text = subreddit[index]?.title
             
             // Switches URL to load images if it is of certain types
-            if let contentURL = subreddit[index]?.content, ["png","jpg","gif", "jpeg"].contains(contentURL.pathExtension) {
+            if let contentURL = subreddit[index]?.content, ["png","jpg","gif", "jpeg"].contains(contentURL.pathExtension), !settingGurl.get(id: "imgSwitch", setDefault: false) {
                 print(contentURL.pathExtension)
                 imageToLoad = contentURL
             }

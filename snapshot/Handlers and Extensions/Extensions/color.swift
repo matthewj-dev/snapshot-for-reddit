@@ -25,7 +25,7 @@ extension UIColor {
 			self.init(red: 1, green: 149/255, blue: 0, alpha: 1.0)
 			
 		case .iOSRed:
-			self.init(red: 1, green: 59/255, blue: 48, alpha: 1.0)
+			self.init(red: 1, green: 59/255, blue: 48/255, alpha: 1.0)
 		}
 	}
 	

@@ -12,6 +12,7 @@ class TabBarControl: UITabBarController, RedditView {
 
 	var redditAPI = RedditHandler()
 	let center = NotificationCenter.default
+    let settings = SettingsHandler()
 	
 	override func loadView() {
 		super.loadView()
@@ -48,15 +49,26 @@ class TabBarControl: UITabBarController, RedditView {
 	
 	var darkModeEnabled = false
 	@objc func brightnessChanged() {
+        if !settings.get(id: "darkSwitch", setDefault: false) {
+            self.darkModeEnabled = false
+            for i in viewControllers! {
+                if i is DarkMode {
+                    (i as! DarkMode).darkMode(isOn: false)
+                    self.darkModeEnabled = false
+                    self.tabBar.barStyle = .default
+                }
+            }
+            return
+        }
 		for i in viewControllers! {
 			if i is DarkMode {
 				
-				if UIScreen.main.brightness <= 0.20 && !darkModeEnabled {
+				if UIScreen.main.brightness <= settings.get(id: "darkSlider", setDefault: 0.2) && !darkModeEnabled {
 					(i as! DarkMode).darkMode(isOn: true)
 					self.darkModeEnabled = true
 					self.tabBar.barStyle = .black
 				}
-				else if UIScreen.main.brightness > 0.20 && darkModeEnabled {
+				else if UIScreen.main.brightness > settings.get(id: "darkSlider", setDefault: 0.2) && darkModeEnabled {
 					(i as! DarkMode).darkMode(isOn: false)
 					self.darkModeEnabled = false
 					self.tabBar.barStyle = .default

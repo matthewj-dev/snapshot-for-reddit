@@ -66,15 +66,15 @@ class ImageCacher {
 //                    self.retreive(pair: pairs[i])
 //                }
 //            }
-            DispatchQueue.global().async {
-                for i in goTo ..< pairs.count {
-                    self.retreive(pair: pairs[i])
-                }
-            }
-            
+			DispatchQueue.global().async {
+				for i in goTo ..< pairs.count {
+					self.retreive(pair: pairs[i])
+				}
+			}
+			
         }
     }
-	
+    
 }
 
 struct ImageCachePair {

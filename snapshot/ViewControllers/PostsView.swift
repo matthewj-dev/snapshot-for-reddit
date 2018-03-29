@@ -10,34 +10,34 @@ import UIKit
 import SafariServices
 
 class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate, DarkMode, RedditView {
-	
-	func redditUserChanged(loggedIn: Bool) {
-		loadSubredditIntoCollectionView()
-	}
-	
-	var darkModeEnabled: Bool = false
-	
-	func darkMode(isOn: Bool) {
-		darkModeEnabled = isOn
-		
-		if isOn {
-			if postCollection != nil {
-				self.postCollection.reloadData()
-			}
-			self.view.backgroundColor = .black
-			self.postCollection.backgroundColor = .black
-			self.loadingWheel.activityIndicatorViewStyle = .white
-		}
-		else {
-			if postCollection != nil {
-				self.postCollection.reloadData()
-			}
-			self.view.backgroundColor = .white
-			self.postCollection.backgroundColor = .white
-			self.loadingWheel.activityIndicatorViewStyle = .gray
-		}
-	}
-	
+    
+    func redditUserChanged(loggedIn: Bool) {
+        loadSubredditIntoCollectionView()
+    }
+    
+    var darkModeEnabled: Bool = false
+    
+    func darkMode(isOn: Bool) {
+        darkModeEnabled = isOn
+        
+        if isOn {
+            if postCollection != nil {
+                self.postCollection.reloadData()
+            }
+            self.view.backgroundColor = .black
+            self.postCollection.backgroundColor = .black
+            self.loadingWheel.activityIndicatorViewStyle = .white
+        }
+        else {
+            if postCollection != nil {
+                self.postCollection.reloadData()
+            }
+            self.view.backgroundColor = .white
+            self.postCollection.backgroundColor = .white
+            self.loadingWheel.activityIndicatorViewStyle = .gray
+        }
+    }
+    
 
     @IBOutlet weak var postCollection: UICollectionView!
     var subredditToLoad = ""
@@ -46,50 +46,50 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
     var redditAPI = RedditHandler()
     var imageCache = ImageCacher()
-	
+    
     var subreddit: Subreddit!
     var itemCount = 0
-	
-	let loadingWheel = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-	
+    
+    let loadingWheel = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    
     override func loadView() {
         super.loadView()
-		
-		// Gets the global API from the TabBar Controller
-		if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
-			redditAPI = api
-		}
-		
-		registerForPreviewing(with: self, sourceView: self.postCollection)
-		
+        
+        // Gets the global API from the TabBar Controller
+        if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
+            redditAPI = api
+        }
+        
+        registerForPreviewing(with: self, sourceView: self.postCollection)
+        
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
-		if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
-			redditAPI = api
-		}
-		
-		loadingWheel.startAnimating()
-		self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingWheel)
+        if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
+            redditAPI = api
+        }
+        
+        loadingWheel.startAnimating()
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingWheel)
     }
     
     //Called when view has finished loading but not yet appeared on screen
     override func viewDidLoad() {
         super.viewDidLoad()
-		loadSubredditIntoCollectionView()
-		
-		darkMode(isOn: darkModeEnabled)
-		
+        loadSubredditIntoCollectionView()
+        
+        darkMode(isOn: darkModeEnabled)
+        
         //Notification for when the user dismisses the full screen image viewer
         ncCenter.addObserver(self, selector: #selector(bringBackTab), name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
         
         postCollection.delegate = self
         postCollection.dataSource = self
-		
+        
     }
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(true)
-	}
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+    }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -98,30 +98,30 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         guard let postCell = cell as? PostsViewCell else {
             return cell
         }
-		
-		if darkModeEnabled {
-			postCell.backgroundColor = .black
-			postCell.postTitle.textColor = .white
-			postCell.postTitle.backgroundColor = (UIColor.black).withAlphaComponent(0.75)
-		}
-		else {
-			postCell.backgroundColor = .white
-			postCell.postTitle.textColor = .black
-			postCell.postTitle.backgroundColor = (UIColor.white).withAlphaComponent(0.75)
-		}
+        
+        if darkModeEnabled {
+            postCell.backgroundColor = .black
+            postCell.postTitle.textColor = .white
+            postCell.postTitle.backgroundColor = (UIColor.black).withAlphaComponent(0.75)
+        }
+        else {
+            postCell.backgroundColor = .white
+            postCell.postTitle.textColor = .black
+            postCell.postTitle.backgroundColor = (UIColor.white).withAlphaComponent(0.75)
+        }
         
         guard let post = subreddit[indexPath.row] else {
             return postCell
         }
         
         postCell.postTitle.text = post.title!
-		
+        
         if let key = post.id, let url = post.thumbnail {
             DispatchQueue.main.async {
                 postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
             }
         }
-		
+        
         return postCell
         
     }
@@ -145,7 +145,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         self.tabBarController?.tabBar.isHidden = true
         
         present(newView, animated: true, completion: nil)
-		
+        
     }
     
     //Variable used for detecting whether an update is already taking place
@@ -187,7 +187,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     func loadSubredditIntoCollectionView() {
         redditAPI.asyncGetSubreddit(Subreddit: subredditToLoad, count: 100, id: nil, type: .image, completion: {(newSubreddit) in
             if newSubreddit != nil {
-				
+                
                 self.subreddit = newSubreddit!
                 self.itemCount = self.subreddit.postCount
                 
@@ -205,50 +205,50 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
                         imagePairs.append(ImageCachePair(key: key, url: url))
                     }
                 }
-				
-				self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
-					self.postCollection.reloadData()
-					self.loadingWheel.stopAnimating()
-				})
-				
-			}
-			else {
-				let alert = UIAlertController(title: "Subreddit not found", message: "The specified subreddit was not found", preferredStyle: .alert)
-				alert.addAction(UIAlertAction(title: "Understood", style: .cancel, handler: {Void in
-					self.navigationController?.popViewController(animated: true)
-				}))
-				self.present(alert, animated: true, completion: nil)
-			}
-		})
-	}
-	
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-		guard let indexPath = postCollection.indexPathForItem(at: location) else { return nil }
-		guard let cell = postCollection.cellForItem(at: indexPath) else { return  nil }
-		
-		let newView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MaxImageController") as! MaxViewController
-		
-		newView.subreddit = subreddit
-		newView.index = indexPath.row
-		
-		previewingContext.sourceRect = cell.frame
-		
-		
-		return newView
-	}
-	
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-		viewControllerToCommit.modalTransitionStyle = .crossDissolve
-		viewControllerToCommit.modalPresentationStyle = .overCurrentContext
-		
-		self.tabBarController?.tabBar.isHidden = true
-		
-		present(viewControllerToCommit, animated: true, completion: nil)
-	}
-	
+                
+                self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
+                    self.postCollection.reloadData()
+                    self.loadingWheel.stopAnimating()
+                })
+                
+            }
+            else {
+                let alert = UIAlertController(title: "Subreddit not found", message: "The specified subreddit was not found", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Understood", style: .cancel, handler: {Void in
+                    self.navigationController?.popViewController(animated: true)
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }
+        })
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard let indexPath = postCollection.indexPathForItem(at: location) else { return nil }
+        guard let cell = postCollection.cellForItem(at: indexPath) else { return  nil }
+        
+        let newView = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "MaxImageController") as! MaxViewController
+        
+        newView.subreddit = subreddit
+        newView.index = indexPath.row
+        
+        previewingContext.sourceRect = cell.frame
+        
+        
+        return newView
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        viewControllerToCommit.modalTransitionStyle = .crossDissolve
+        viewControllerToCommit.modalPresentationStyle = .overCurrentContext
+        
+        self.tabBarController?.tabBar.isHidden = true
+        
+        present(viewControllerToCommit, animated: true, completion: nil)
+    }
+    
     @objc func bringBackTab() {
         self.tabBarController?.tabBar.isHidden = false
-		
+        
     }
 }
 

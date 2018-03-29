@@ -145,7 +145,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         self.tabBarController?.tabBar.isHidden = true
         
         present(newView, animated: true, completion: nil)
-        
+		
     }
     
     //Variable used for detecting whether an update is already taking place
@@ -248,6 +248,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
 	
     @objc func bringBackTab() {
         self.tabBarController?.tabBar.isHidden = false
+		
     }
 }
 

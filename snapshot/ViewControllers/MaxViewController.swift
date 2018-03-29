@@ -61,24 +61,35 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
         maxView.addGestureRecognizer(swippyRight)
         maxView.addGestureRecognizer(swippyLeft)
 		
+		let tapperTwo = UITapGestureRecognizer(target: self, action: #selector(showMoreInfo))
+		postTitle.isUserInteractionEnabled = true
+		postTitle.addGestureRecognizer(tapperTwo)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 		scrollView.setZoomScale(1.0, animated: false)
+		
+		ncObject.removeObserver(self, name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
 		playerLayer.removeFromSuperlayer()
+		
+		if avPlayer != nil {
+			avPlayer.pause()
+		}
 		
 		self.view.addSubview(popup)
 		
-        if let image = subreddit[index]?.preview {
-            imageToLoad = image
-            postTitle.text = subreddit[index]?.title
+		
+		
+		if let image = subreddit[index]?.preview {
+			imageToLoad = image
+			postTitle.text = subreddit[index]?.title
 			
-            	// Switches URL to load images if it is of certain types
-            if let contentURL = subreddit[index]?.content, ["png","jpg","gif", "jpeg"].contains(contentURL.pathExtension) {
-                print(contentURL.pathExtension)
-                imageToLoad = contentURL
-            }
+			// Switches URL to load images if it is of certain types
+			if let contentURL = subreddit[index]?.content, ["png","jpg","gif", "jpeg"].contains(contentURL.pathExtension) {
+				print(contentURL.pathExtension)
+				imageToLoad = contentURL
+			}
 				
 				// Loads Video types into an AVplayer layer
 			else if let contentURL = subreddit[index]?.content, ["mp4","webm","gifv"].contains(contentURL.pathExtension) {
@@ -87,44 +98,38 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
 				videoURL = URL(string: videoURL.absoluteString.replacingOccurrences(of: ".webm", with: ".mp4"))!
 				videoURL = URL(string: videoURL.absoluteString.replacingOccurrences(of: ".gifv", with: ".mp4"))!
 				
-				self.maxView.image = nil
-				print(videoURL)
-				avPlayer = AVPlayer(url: videoURL)
-				playerLayer = AVPlayerLayer(player: avPlayer)
-				playerLayer.frame = self.player.frame
-				
-				self.view.layer.addSublayer(playerLayer)
-				
-				avPlayer.play()
-				self.popup.removeFromSuperview()
+				loadVideoToAVPlayer(videoURL: videoURL)
 				return
 			}
 				
-				// Gets and plays videos hosted by Reddit itself in an AVplayer layer
+			// Loads .mp4 video from gfycat URL and loads into AVPlayer
+			else if let contentURL = subreddit[index]?.content, contentURL.absoluteString.contains("gfycat") {
+				let gfycatID = contentURL.absoluteString.components(separatedBy: "gfycat.com/")
+				if gfycatID.count > 1 {
+					if let videoURL = URL(string: "https://giant.gfycat.com/\(gfycatID[1]).mp4") {
+						loadVideoToAVPlayer(videoURL: videoURL)
+						return
+					}
+				}
+				
+			}
+				
+			// Gets and plays videos hosted by Reddit itself in an AVplayer layer
 			else if subreddit[index]?.content != nil, (subreddit[index]?.content?.absoluteString.contains("v.redd.it"))! {
 				print("You are here")
 				if let secureMedia = subreddit[index]?.data["secure_media"] as? [String:Any], let redditVideo = secureMedia["reddit_video"] as? [String:Any], let videoString = redditVideo["hls_url"] as? String, let videoURL = URL(string: videoString) {
-					self.maxView.image = nil
-					print(videoURL)
-					avPlayer = AVPlayer(url: videoURL)
-					playerLayer = AVPlayerLayer(player: avPlayer)
-					playerLayer.frame = self.player.frame
-					
-					self.view.layer.addSublayer(playerLayer)
-					
-					avPlayer.play()
-					self.popup.removeFromSuperview()
+					loadVideoToAVPlayer(videoURL: videoURL)
 					return
 				}
 			}
 			else {
 				print("Nothing special about: \(subreddit[index]?.content)")
 			}
-        }
-        else if let image = subreddit[index]?.thumbnail {
+		}
+		else if let image = subreddit[index]?.thumbnail {
 			imageToLoad = image
 			postTitle.text = subreddit[index]?.title
-        }
+		}
 		else {
 			return
 		}
@@ -159,6 +164,24 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
 		scrollView.contentOffset = CGPoint(x: 0, y: 0)
 		imageHeight.constant = scrollView.frame.height
 		popup.frame.origin = self.view.center
+	}
+	
+	func loadVideoToAVPlayer(videoURL: URL) {
+		self.maxView.image = nil
+		print(videoURL)
+		avPlayer = AVPlayer(url: videoURL)
+		playerLayer = AVPlayerLayer(player: avPlayer)
+		playerLayer.frame = self.player.frame
+		
+		self.view.layer.addSublayer(playerLayer)
+		
+		ncObject.addObserver(forName: Notification.Name.AVPlayerItemDidPlayToEndTime, object: self.avPlayer.currentItem, queue: .main, using: {(Void) in
+			self.avPlayer.seek(to: kCMTimeZero)
+			self.avPlayer.play()
+		})
+		avPlayer.play()
+		self.popup.removeFromSuperview()
+		return
 	}
 	
 	@objc func longPress() {
@@ -226,6 +249,9 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
 	
     @objc func dismissView() {
         ncObject.post(name: Notification.Name.init(rawValue: "isDismissed"), object: nil)
+		if avPlayer != nil {
+			avPlayer.pause()
+		}
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -242,5 +268,15 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
             self.viewDidLoad()
         }
     }
+	
+	@objc func showMoreInfo() {
+//		var frame = self.view.frame
+//		frame.size.height = frame.size.height / 2
+//		print(frame.origin, self.view.frame.origin)
+//		print(self.view.frame)
+//		var view = MoreInfoView(frame: frame)
+//
+//		self.view.addSubview(view)
+	}
 	
 }

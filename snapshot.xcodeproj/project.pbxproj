@@ -139,6 +139,7 @@
 				34960FA42057171A00977A53 /* PostsView.swift */,
 				34960FB92057208A00977A53 /* PostsViewCell.swift */,
 				341DBCCE205A0D6F00287917 /* UserViewController.swift */,
+				5AB72FA82076833200C3FC7F /* SavedPost.swift */,
 				3447EC7D205B289F00D88926 /* MaxViewController.swift */,
 				5A7F307C205CA8B400A3CAC0 /* SubredditsView.swift */,
 				5A7F307E205CAD5000A3CAC0 /* RedditListCell.swift */,
@@ -147,7 +148,6 @@
 				5A933346206C1F130037F719 /* MoreInfoView.swift */,
 				5A933348206C1F740037F719 /* MoreInfoView.xib */,
 				34D0CF51206C91C600308265 /* SettingsTableViewController.swift */,
-				5AB72FA82076833200C3FC7F /* SavedPost.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

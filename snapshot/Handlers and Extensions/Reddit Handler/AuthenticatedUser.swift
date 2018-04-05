@@ -12,33 +12,33 @@ import Foundation
 Authenticated User that extends from RedditUser. Has access token management functions.
 */
 class AuthenticatedUser: RedditUser, NSCoding {
-	
+    
     var accessToken: String
     var refreshToken: String
-	/**
-	Date at which the current access token will expire
-	*/
+    /**
+    Date at which the current access token will expire
+    */
     var expireyDate: Date?
     
     /**
     - Parameter authResponse: RedditResponse object that contains authorization data
     */
-	init(api: RedditHandler, authResponse: RedditResponse) throws {
-		
+    init(api: RedditHandler, authResponse: RedditResponse) throws {
+        
         if let deadTime = authResponse.jsonReturnedData["expires_in"] as? Int {
             expireyDate = Date().addingTimeInterval(TimeInterval(deadTime))
         }
-		else {
-			throw UserError.invalidParse("Unable to parse date that token will expire")
-		}
-		
+        else {
+            throw UserError.invalidParse("Unable to parse date that token will expire")
+        }
+        
         guard let authToken = authResponse.jsonReturnedData["access_token"] as? String, let refreshToken = authResponse.jsonReturnedData["refresh_token"] as? String else {
             throw UserError.invalidParse("User token not available")
         }
         
         self.accessToken = authToken
         self.refreshToken = refreshToken
-		
+        
         var request = URLRequest(url: URL(string: "https://oauth.reddit.com/api/v1/me")!)
         request.addValue("com.lapis.snapshot:v1.2 (by /u/Pokeh321)", forHTTPHeaderField: "User-Agent")
         request.addValue("bearer \(authToken)", forHTTPHeaderField: "Authorization")
@@ -46,9 +46,9 @@ class AuthenticatedUser: RedditUser, NSCoding {
         guard let userData = api.getRedditResponse(request: request) else {
             throw UserError.invalidResponse()
         }
-		super.init(userData: userData.jsonReturnedData, postsData: nil)
-		
-		print("Authenticated User successfully created")
+        super.init(userData: userData.jsonReturnedData, postsData: nil)
+        
+        print("Authenticated User successfully created")
     }
     
     /**
@@ -56,16 +56,16 @@ class AuthenticatedUser: RedditUser, NSCoding {
     */
     required init?(coder aDecoder: NSCoder) {
         let packagedData = aDecoder.decodeObject(forKey: "packagedContents") as! [String:Any]
-		
+        
         accessToken = packagedData["accessToken"] as! String
         refreshToken = packagedData["refreshToken"] as! String
         expireyDate = (packagedData["expireDate"] as! Date)
-		
+        
         if Date() > expireyDate! {
-			print("Token expired, retrieving new.")
+            print("Token expired, retrieving new.")
             let api = RedditHandler()
             if let response = api.getRedditResponse(request: api.getAccessTokenRequest(grantType: "refresh_token", grantLogic: "refresh_token=\(self.refreshToken)")) {
-				
+                
                 if response.httpResponseCode == 200 {
                     accessToken = response.jsonReturnedData["access_token"] as! String
                     expireyDate = Date().addingTimeInterval(TimeInterval(response.jsonReturnedData["expires_in"] as! Int))
@@ -87,7 +87,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
         packagedData["accessToken"] = accessToken
         packagedData["userData"] = data
         packagedData["expireDate"] = expireyDate
-		packagedData["refreshToken"] = refreshToken
+        packagedData["refreshToken"] = refreshToken
         
         return packagedData
     }
@@ -122,7 +122,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
         }
         
         print("Token refresh complete")
-		saveUserToFile()
+        saveUserToFile()
         return true
     }
     
@@ -146,56 +146,56 @@ class AuthenticatedUser: RedditUser, NSCoding {
         
         return request
     }
-	
-	/**
-	Creates an array of user subscribed subreddits
-	- Parameter api: Reddit Handler to handle the request
-	- Returns: String Array of Subscribed subreddit capitalized and sorted
-	*/
-	func getSubscribedSubreddits(api: RedditHandler) -> [String] {
-		var toReturn = [String]()
-		
-		if let request = api.getRedditResponse(urlSuffix: "/subreddits/mine/subscriber.json"), request.childrenData != nil {
-			for i in 0..<request.childrenDataCount {
-				if let subName = request.parsedChildData(index: i)!["display_name_prefixed"] as? String {
-					toReturn.append(subName.components(separatedBy: "r/")[1].capitalized)
-					
-				}
-			}
-		}
-		toReturn.sort()
-		return toReturn
-	}
-	
-	func getSavedPosts(api: RedditHandler) -> Subreddit? {
-		if let name = self.name, let url = URL(string: "https://oauth.reddit.com/user/\(name)/saved.json?limit=100&raw_json=1") {
-			let request = getAuthenticatedRequest(url: url)
-			if let response = api.getRedditResponse(request: request) {
-				do {
-					return try Subreddit(api: api, response: response, name: "", type: .image, isReloadSub: true)
-				}
-				catch {
-					return nil
-				}
-			}
-		}
-		return nil
-	}
-	
-	/**
-	Asyncriously get subscribed subreddits and then performs completion handler with the results
-	- Parameters:
-	 - api: Reddit Handler to handle the request
-	 - completition: Block with [String] parameter of returned array
-	*/
-	func asyncGetSubscribedSubreddits(api: RedditHandler, completition: @escaping ([String])->Void) {
-		DispatchQueue.global().async {
-			let subreddits = self.getSubscribedSubreddits(api: api)
-			DispatchQueue.main.sync {
-				completition(subreddits)
-			}
-		}
-	}
+    
+    /**
+    Creates an array of user subscribed subreddits
+    - Parameter api: Reddit Handler to handle the request
+    - Returns: String Array of Subscribed subreddit capitalized and sorted
+    */
+    func getSubscribedSubreddits(api: RedditHandler) -> [String] {
+        var toReturn = [String]()
+        
+        if let request = api.getRedditResponse(urlSuffix: "/subreddits/mine/subscriber.json"), request.childrenData != nil {
+            for i in 0..<request.childrenDataCount {
+                if let subName = request.parsedChildData(index: i)!["display_name_prefixed"] as? String {
+                    toReturn.append(subName.components(separatedBy: "r/")[1].capitalized)
+                    
+                }
+            }
+        }
+        toReturn.sort()
+        return toReturn
+    }
+    
+    func getSavedPosts(api: RedditHandler) -> Subreddit? {
+        if let name = self.name, let url = URL(string: "https://oauth.reddit.com/user/\(name)/saved.json?limit=100&raw_json=1") {
+            let request = getAuthenticatedRequest(url: url)
+            if let response = api.getRedditResponse(request: request) {
+                do {
+                    return try Subreddit(api: api, response: response, name: "", type: .image, isReloadSub: true)
+                }
+                catch {
+                    return nil
+                }
+            }
+        }
+        return nil
+    }
+    
+    /**
+    Asyncriously get subscribed subreddits and then performs completion handler with the results
+    - Parameters:
+     - api: Reddit Handler to handle the request
+     - completition: Block with [String] parameter of returned array
+    */
+    func asyncGetSubscribedSubreddits(api: RedditHandler, completition: @escaping ([String])->Void) {
+        DispatchQueue.global().async {
+            let subreddits = self.getSubscribedSubreddits(api: api)
+            DispatchQueue.main.sync {
+                completition(subreddits)
+            }
+        }
+    }
     
     /**
     Encode object with persistent storage
@@ -203,12 +203,12 @@ class AuthenticatedUser: RedditUser, NSCoding {
     func encode(with aCoder: NSCoder) {
         aCoder.encode(packageDataforFutureCreation(), forKey: "packagedContents")
     }
-	
-	/**
-	Saves AuthenticatedUser to file
-	*/
-	func saveUserToFile() {
-		let saveLocation = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
-		NSKeyedArchiver.archiveRootObject(self, toFile: saveLocation)
-	}
+    
+    /**
+    Saves AuthenticatedUser to file
+    */
+    func saveUserToFile() {
+        let saveLocation = (FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!).appendingPathComponent("userData").path
+        NSKeyedArchiver.archiveRootObject(self, toFile: saveLocation)
+    }
 }

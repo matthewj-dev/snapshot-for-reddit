@@ -9,26 +9,26 @@
 import UIKit
 
 class PostsNavigationController: UINavigationController, RedditView {
-	
-	override func loadView() {
-		super.loadView()
-		
-		let postsView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
-		let subsView = storyboard?.instantiateViewController(withIdentifier: "SubredditView") as! SubredditsView
-		
-		subsView.navigationItem.title = "Subreddits"
-		
-		self.viewControllers = [subsView, postsView]
-	}
-	
+    
+    override func loadView() {
+        super.loadView()
+        
+        let postsView = storyboard?.instantiateViewController(withIdentifier: "PostsView") as! PostsView
+        let subsView = storyboard?.instantiateViewController(withIdentifier: "SubredditView") as! SubredditsView
+        
+        subsView.navigationItem.title = "Subreddits"
+        
+        self.viewControllers = [subsView, postsView]
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-	
-	func redditUserChanged(loggedIn: Bool) {
-		for view in viewControllers {
-			guard let view = view as? RedditView else {continue}
-			view.redditUserChanged(loggedIn: loggedIn)
-		}
-	}
+    
+    func redditUserChanged(loggedIn: Bool) {
+        for view in viewControllers {
+            guard let view = view as? RedditView else {continue}
+            view.redditUserChanged(loggedIn: loggedIn)
+        }
+    }
 }

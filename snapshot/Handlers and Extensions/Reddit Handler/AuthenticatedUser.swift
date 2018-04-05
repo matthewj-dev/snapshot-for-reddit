@@ -141,7 +141,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
     */
     func getAuthenticatedRequest(url: URL) -> URLRequest {
         var request = URLRequest(url: url)
-        request.addValue("com.lapis.snapshot:v1.2 (by /u/Pokeh321)", forHTTPHeaderField: "User-Agent")
+        request.addValue("com.lapis.snapshot:v1.2", forHTTPHeaderField: "User-Agent")
         request.addValue("bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         return request
@@ -165,6 +165,21 @@ class AuthenticatedUser: RedditUser, NSCoding {
 		}
 		toReturn.sort()
 		return toReturn
+	}
+	
+	func getSavedPosts(api: RedditHandler) -> Subreddit? {
+		if let name = self.name, let url = URL(string: "https://oauth.reddit.com/user/\(name)/saved.json?limit=100&raw_json=1") {
+			let request = getAuthenticatedRequest(url: url)
+			if let response = api.getRedditResponse(request: request) {
+				do {
+					return try Subreddit(api: api, response: response, name: "", type: .image, isReloadSub: true)
+				}
+				catch {
+					return nil
+				}
+			}
+		}
+		return nil
 	}
 	
 	/**

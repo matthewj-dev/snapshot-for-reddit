@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PostsNavigationController: UINavigationController, DarkMode, RedditView {
+class PostsNavigationController: UINavigationController, RedditView {
 	
 	override func loadView() {
 		super.loadView()
@@ -23,7 +23,6 @@ class PostsNavigationController: UINavigationController, DarkMode, RedditView {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		darkMode(isOn: darkModeEnabled)
     }
 	
 	func redditUserChanged(loggedIn: Bool) {
@@ -32,27 +31,4 @@ class PostsNavigationController: UINavigationController, DarkMode, RedditView {
 			view.redditUserChanged(loggedIn: loggedIn)
 		}
 	}
-	
-	var darkModeEnabled = false
-	func darkMode(isOn: Bool) {
-		darkModeEnabled = isOn
-		
-		for i in viewControllers {
-			if i is DarkMode {
-				
-				if isOn {
-					(i as! DarkMode).darkMode(isOn: true)
-					self.darkModeEnabled = true
-					self.navigationBar.barStyle = .black
-				}
-				else {
-					(i as! DarkMode).darkMode(isOn: false)
-					self.darkModeEnabled = false
-					self.navigationBar.barStyle = .default
-				}
-			}
-		}
-		
-	}
-	
 }

@@ -14,6 +14,7 @@ extension UIColor {
 		case iOSBlue
 		case iOSOrange
 		case iOSRed
+		case iOSGreen
 	}
 	
 	convenience init(iOSColor: appleColors) {
@@ -26,6 +27,9 @@ extension UIColor {
 			
 		case .iOSRed:
 			self.init(red: 1, green: 59/255, blue: 48/255, alpha: 1.0)
+			
+		case .iOSGreen:
+			self.init(red: 76/255, green: 217/255, blue: 100/255, alpha: 1.0)
 		}
 	}
 	

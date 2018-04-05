@@ -73,10 +73,6 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
-        if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
-            redditAPI = api
-        }
-        
         loadingWheel.startAnimating()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: loadingWheel)
     }

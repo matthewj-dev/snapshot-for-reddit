@@ -35,6 +35,8 @@
 		5A8E80562066C40E0048917A /* color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8E80552066C40E0048917A /* color.swift */; };
 		5A933347206C1F130037F719 /* MoreInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A933346206C1F130037F719 /* MoreInfoView.swift */; };
 		5A933349206C1F740037F719 /* MoreInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5A933348206C1F740037F719 /* MoreInfoView.xib */; };
+		5AB72FA720767C0F00C3FC7F /* JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB72FA620767C0F00C3FC7F /* JSON.swift */; };
+		5AB72FA92076833200C3FC7F /* SavedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB72FA82076833200C3FC7F /* SavedPost.swift */; };
 		5ACCC37F205E19D70001F685 /* ImageCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ACCC37E205E19D70001F685 /* ImageCacher.swift */; };
 		5AE719892069ACFD0075AF76 /* TabBarControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AE719882069ACFD0075AF76 /* TabBarControl.swift */; };
 /* End PBXBuildFile section */
@@ -70,6 +72,8 @@
 		5A8E80552066C40E0048917A /* color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = color.swift; sourceTree = "<group>"; };
 		5A933346206C1F130037F719 /* MoreInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreInfoView.swift; sourceTree = "<group>"; };
 		5A933348206C1F740037F719 /* MoreInfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MoreInfoView.xib; sourceTree = "<group>"; };
+		5AB72FA620767C0F00C3FC7F /* JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSON.swift; sourceTree = "<group>"; };
+		5AB72FA82076833200C3FC7F /* SavedPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPost.swift; sourceTree = "<group>"; };
 		5ACCC37E205E19D70001F685 /* ImageCacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacher.swift; sourceTree = "<group>"; };
 		5AE719882069ACFD0075AF76 /* TabBarControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -143,6 +147,7 @@
 				5A933346206C1F130037F719 /* MoreInfoView.swift */,
 				5A933348206C1F740037F719 /* MoreInfoView.xib */,
 				34D0CF51206C91C600308265 /* SettingsTableViewController.swift */,
+				5AB72FA82076833200C3FC7F /* SavedPost.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -150,6 +155,7 @@
 		34960FB82057189E00977A53 /* Handlers and Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				5AB72FA620767C0F00C3FC7F /* JSON.swift */,
 				5ACCC37E205E19D70001F685 /* ImageCacher.swift */,
 				345A31E7205F08E400C7EE50 /* Extensions */,
 				5A4CD659205A2E3200E0ECE0 /* Reddit Handler */,
@@ -254,6 +260,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				34BD528E206C80C5008D170D /* Settings Handler.swift in Sources */,
+				5AB72FA720767C0F00C3FC7F /* JSON.swift in Sources */,
 				5A1AED3E20633D3600D70878 /* Popup.swift in Sources */,
 				5A64D578205A46AA0077F635 /* RedditUser.swift in Sources */,
 				5A74A4F8206AA14D009077AB /* RedditView.swift in Sources */,
@@ -275,6 +282,7 @@
 				5A64D576205A46810077F635 /* RedditPost.swift in Sources */,
 				3476B71F205760CD000704B0 /* RedditHandler.swift in Sources */,
 				5A7F307B205C3C2100A3CAC0 /* PostsNavigationControl.swift in Sources */,
+				5AB72FA92076833200C3FC7F /* SavedPost.swift in Sources */,
 				34960FBA2057208A00977A53 /* PostsViewCell.swift in Sources */,
 				5A933347206C1F130037F719 /* MoreInfoView.swift in Sources */,
 				34960FA32057171A00977A53 /* AppDelegate.swift in Sources */,
@@ -415,7 +423,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PH5FB4GG2Y;
+				DEVELOPMENT_TEAM = 5PAKG7TRL3;
 				INFOPLIST_FILE = snapshot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;
@@ -430,7 +438,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = PH5FB4GG2Y;
+				DEVELOPMENT_TEAM = 5PAKG7TRL3;
 				INFOPLIST_FILE = snapshot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;

@@ -108,11 +108,19 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             postCell.backgroundColor = .black
             postCell.postTitle.textColor = .white
             postCell.postTitle.backgroundColor = (UIColor.black).withAlphaComponent(0.75)
+			postCell.layer.cornerRadius = 10
+			postCell.clipsToBounds = true
+			postCell.layer.borderWidth = 0.25
+			postCell.layer.borderColor = UIColor.white.cgColor
         }
         else {
             postCell.backgroundColor = .white
             postCell.postTitle.textColor = .black
             postCell.postTitle.backgroundColor = (UIColor.white).withAlphaComponent(0.75)
+			postCell.layer.cornerRadius = 10
+			postCell.clipsToBounds = true
+			postCell.layer.borderWidth = 0.25
+			postCell.layer.borderColor = (UIColor.black).withAlphaComponent(0.75).cgColor
         }
         
         guard let post = subreddit[indexPath.row] else {

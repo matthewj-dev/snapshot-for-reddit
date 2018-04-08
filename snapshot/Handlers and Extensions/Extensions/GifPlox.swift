@@ -1,5 +1,6 @@
 import UIKit
 
+// credit: https://gist.github.com/toddheasley/1d8fbe3621c935789015
 extension UIImage {
     static func animatedImage(data: Data) -> UIImage? {
         guard let source: CGImageSource = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetCount(source) > 1 else {

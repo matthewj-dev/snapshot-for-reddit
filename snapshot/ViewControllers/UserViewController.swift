@@ -67,10 +67,18 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 		let cell = savedPostsTable.dequeueReusableCell(withIdentifier: "savedPost") as! SavedPost
 		if let post = savedPosts?[indexPath.row] {
 			cell.postTitle.text = post.title
+			cell.postThumb.layer.cornerRadius = 10
+			cell.postThumb.clipsToBounds = true
+			cell.postThumb.layer.borderWidth = 0.25
+			cell.postThumb.layer.borderColor = UIColor.black.cgColor
 			
 			if darkModeEnabled {
 				cell.backgroundColor = .black
 				cell.postTitle.textColor = .white
+				cell.postThumb.layer.cornerRadius = 10
+				cell.postThumb.clipsToBounds = true
+				cell.postThumb.layer.borderWidth = 0.25
+				cell.postThumb.layer.borderColor = UIColor.white.cgColor
 			}
 			
 			if let thumbnailURL = post.thumbnail {

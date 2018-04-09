@@ -21,14 +21,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 				(subreddit) in
 				self.navigationItem.title = self.redditAPI.authenticatedUser?.name
 				self.savedPosts = subreddit
-				if savedPosts != nil {
+				if self.savedPosts != nil {
 					var imagePairs = [ImageCachePair]()
-					for postIndex in 0 ..< savedPosts!.postCount {
-						if let key = savedPosts?[postIndex]?.id, let url = savedPosts?[postIndex]?.thumbnail {
+					for postIndex in 0 ..< self.savedPosts!.postCount {
+						if let key = self.savedPosts?[postIndex]?.id, let url = self.savedPosts?[postIndex]?.thumbnail {
 							imagePairs.append(ImageCachePair(key: key, url: url))
 						}
 					}
-					imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 5, completion: {
+					self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 5, completion: {
 						self.savedPostsTable.reloadData()
 					})
 				}
@@ -160,14 +160,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 			api.authenticatedUser?.asyncGetSavedPosts(api: api, completion: {
 				(subreddit) in
 				self.savedPosts = subreddit
-				if savedPosts != nil {
+				if self.savedPosts != nil {
 					var imagePairs = [ImageCachePair]()
-					for postIndex in 0 ..< savedPosts!.postCount {
-						if let key = savedPosts?[postIndex]?.id, let url = savedPosts?[postIndex]?.thumbnail {
+					for postIndex in 0 ..< self.savedPosts!.postCount {
+						if let key = self.savedPosts?[postIndex]?.id, let url = self.savedPosts?[postIndex]?.thumbnail {
 							imagePairs.append(ImageCachePair(key: key, url: url))
 						}
 					}
-					imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 5, completion: {
+					self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 5, completion: {
 						self.savedPostsTable.reloadData()
 					})
 				}

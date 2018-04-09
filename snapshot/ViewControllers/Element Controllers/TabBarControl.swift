@@ -54,19 +54,21 @@ class TabBarControl: UITabBarController, RedditView {
     
     var darkModeEnabled = false
     @objc func brightnessChanged() {
-        if !settings.get(id: "darkSwitch", setDefault: false) {
-            self.darkModeEnabled = false
-			self.tabBar.barStyle = .default
-			for i in viewControllers! {
-				if let navController = i as? UINavigationController {
-					navController.navigationBar.barStyle = .default
-					for i in navController.viewControllers {
-						if i is DarkMode {
-							(i as! DarkMode).darkMode(isOn: false)
+		if !settings.get(id: "darkSwitch", setDefault: false) {
+			if darkModeEnabled == true {
+				for i in viewControllers! {
+					if let navController = i as? UINavigationController {
+						navController.navigationBar.barStyle = .default
+						for i in navController.viewControllers {
+							if i is DarkMode {
+								(i as! DarkMode).darkMode(isOn: false)
+							}
 						}
 					}
 				}
 			}
+			self.darkModeEnabled = false
+			self.tabBar.barStyle = .default
             return
         }
         if UIScreen.main.brightness <= settings.get(id: "darkSlider", setDefault: 0.2) && !darkModeEnabled {

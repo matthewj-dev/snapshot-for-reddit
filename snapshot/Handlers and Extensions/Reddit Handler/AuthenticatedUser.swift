@@ -187,9 +187,13 @@ class AuthenticatedUser: RedditUser, NSCoding {
         return nil
     }
 	
-	func asyncGetSavedPosts(api: RedditHandler, completion: ((Subreddit?)->())) {
-		let subreddit = getSavedPosts(api: api)
-		completion(subreddit)
+	func asyncGetSavedPosts(api: RedditHandler, completion: @escaping ((Subreddit?)->())) {
+		DispatchQueue.global().async {
+			let subreddit = self.getSavedPosts(api: api)
+			DispatchQueue.main.async {
+				completion(subreddit)
+			}
+		}
 	}
     
     /**
@@ -201,7 +205,7 @@ class AuthenticatedUser: RedditUser, NSCoding {
     func asyncGetSubscribedSubreddits(api: RedditHandler, completition: @escaping ([String])->Void) {
         DispatchQueue.global().async {
             let subreddits = self.getSubscribedSubreddits(api: api)
-            DispatchQueue.main.sync {
+            DispatchQueue.main.async {
                 completition(subreddits)
             }
         }

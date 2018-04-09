@@ -60,12 +60,6 @@ class ImageCacher {
                     completion!()
                 }
             }
-            
-//            for i in goTo ..< pairs.count {
-//                DispatchQueue.global().async {
-//                    self.retreive(pair: pairs[i])
-//                }
-//            }
 			DispatchQueue.global().async {
 				for i in goTo ..< pairs.count {
 					self.retreive(pair: pairs[i])

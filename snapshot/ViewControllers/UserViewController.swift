@@ -13,6 +13,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(true)
+		
 	}
 	
 	func redditUserChanged(loggedIn: Bool) {

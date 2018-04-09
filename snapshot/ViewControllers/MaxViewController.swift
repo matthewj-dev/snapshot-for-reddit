@@ -139,7 +139,7 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
             do{
                 let imageData = try Data(contentsOf: self.imageToLoad)
                 
-                if self.imageToLoad.pathExtension == "gif"{
+                if self.imageToLoad.pathExtension == "gif" {
                     let gifToLoad = UIImage.animatedImage(data: imageData)
                     DispatchQueue.main.sync {
                         self.maxView.image = gifToLoad
@@ -154,8 +154,20 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
                     }
                 }
             }
-            catch{
-                print("Image loading has failed")
+			catch{
+				print("Image loading has failed, fallback to Preview")
+				do {
+					if let previewURL = self.subreddit[self.index]?.preview {
+						let imageData = try Data(contentsOf: previewURL)
+						DispatchQueue.main.async {
+							self.maxView.image = UIImage(data: imageData)
+							self.popup.removeFromSuperview()
+						}
+					}
+				}
+				catch {
+					
+				}
             }
         }
     }

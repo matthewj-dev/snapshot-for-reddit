@@ -68,6 +68,10 @@ class ImageCacher {
 			
         }
     }
+	
+	func clear() {
+		cache.removeAll()
+	}
     
 }
 

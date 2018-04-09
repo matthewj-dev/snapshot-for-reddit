@@ -12,10 +12,12 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	func redditUserChanged(loggedIn: Bool) {
 		self.subreddits = [String]()
-		if !loggedIn {
-			self.redditTable.deleteSections(IndexSet(integer: 1), with: .automatic)
+		if redditTable != nil {
+			if !loggedIn {
+				self.redditTable.deleteSections(IndexSet(integer: 1), with: .automatic)
+			}
+			self.repopulateSubTable()
 		}
-		self.repopulateSubTable()
 	}
 	
 	var darkModeEnabled: Bool = false

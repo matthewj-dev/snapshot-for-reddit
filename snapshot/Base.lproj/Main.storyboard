@@ -450,7 +450,7 @@ GifExtension: Todd Heasley - https://github.com/toddheasley</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" minimumValueImage="Moon Day Mode" maximumValueImage="Sun Day Mode" translatesAutoresizingMaskIntoConstraints="NO" id="pZa-dO-CtU">
-                                                    <rect key="frame" x="14" y="6" width="347" height="30"/>
+                                                    <rect key="frame" x="14" y="7" width="347" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="29" id="kdT-XR-YGR"/>
                                                     </constraints>
@@ -460,7 +460,7 @@ GifExtension: Todd Heasley - https://github.com/toddheasley</string>
                                                 </slider>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="pZa-dO-CtU" firstAttribute="top" secondItem="MZF-dX-CI9" secondAttribute="topMargin" constant="-5" id="0db-qh-0AM"/>
+                                                <constraint firstItem="pZa-dO-CtU" firstAttribute="top" secondItem="MZF-dX-CI9" secondAttribute="topMargin" constant="-4" id="0db-qh-0AM"/>
                                                 <constraint firstItem="pZa-dO-CtU" firstAttribute="leading" secondItem="MZF-dX-CI9" secondAttribute="leadingMargin" id="ZWu-gG-bFD"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="pZa-dO-CtU" secondAttribute="trailing" id="blx-hJ-DP4"/>
                                             </constraints>

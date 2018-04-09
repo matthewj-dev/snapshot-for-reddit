@@ -41,23 +41,32 @@ class TabBarControl: UITabBarController, RedditView {
             self.tabBar.items![1].title = "User"
         }
         
-        for view in viewControllers! {
-            guard let view = view as? RedditView else {continue}
-            view.redditUserChanged(loggedIn: loggedIn)
-        }
+		for i in viewControllers! {
+			if let navController = i as? UINavigationController {
+				for i in navController.viewControllers {
+					if i is RedditView {
+						(i as! RedditView).redditUserChanged(loggedIn: loggedIn)
+					}
+				}
+			}
+		}
     }
     
     var darkModeEnabled = false
     @objc func brightnessChanged() {
         if !settings.get(id: "darkSwitch", setDefault: false) {
             self.darkModeEnabled = false
-            for i in viewControllers! {
-                if i is DarkMode {
-                    (i as! DarkMode).darkMode(isOn: false)
-                    self.darkModeEnabled = false
-                    self.tabBar.barStyle = .default
-                }
-            }
+			self.tabBar.barStyle = .default
+			for i in viewControllers! {
+				if let navController = i as? UINavigationController {
+					navController.navigationBar.barStyle = .default
+					for i in navController.viewControllers {
+						if i is DarkMode {
+							(i as! DarkMode).darkMode(isOn: false)
+						}
+					}
+				}
+			}
             return
         }
         if UIScreen.main.brightness <= settings.get(id: "darkSlider", setDefault: 0.2) && !darkModeEnabled {
@@ -68,21 +77,8 @@ class TabBarControl: UITabBarController, RedditView {
             self.darkModeEnabled = false
             self.tabBar.barStyle = .default
         }
-//        for i in viewControllers! {
-//            if i is DarkMode {
-//
-//                if UIScreen.main.brightness <= settings.get(id: "darkSlider", setDefault: 0.2) && !darkModeEnabled {
-//                    (i as! DarkMode).darkMode(isOn: true)
-//                    self.darkModeEnabled = true
-//                    self.tabBar.barStyle = .black
-//                }
-//                else if UIScreen.main.brightness > settings.get(id: "darkSlider", setDefault: 0.2) && darkModeEnabled {
-//                    (i as! DarkMode).darkMode(isOn: false)
-//                    self.darkModeEnabled = false
-//                    self.tabBar.barStyle = .default
-//                }
-//            }
-//        }
+		else { return }
+		
         for i in viewControllers! {
             if let navController = i as? UINavigationController {
                 navController.navigationBar.barStyle = .default

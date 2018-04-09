@@ -77,6 +77,7 @@ class SettingsTableViewController: UITableViewController, DarkMode {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		for i in tableCells { i.selectionStyle = .none }
         print(darkModeEnabled)
         darkMode(isOn: darkModeEnabled)
     }

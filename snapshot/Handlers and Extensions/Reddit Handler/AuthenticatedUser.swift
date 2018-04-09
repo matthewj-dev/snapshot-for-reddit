@@ -166,7 +166,12 @@ class AuthenticatedUser: RedditUser, NSCoding {
         toReturn.sort()
         return toReturn
     }
-    
+	
+	/**
+	Creates a subreddit object with the posts being the contents of the current Authenticated User's saved posts
+	- Parameter api: Reddit Handler to handle the request
+	- Returns: Subreddit?
+	*/
     func getSavedPosts(api: RedditHandler) -> Subreddit? {
         if let name = self.name, let url = URL(string: "https://oauth.reddit.com/user/\(name)/saved.json?limit=100&raw_json=1") {
             let request = getAuthenticatedRequest(url: url)
@@ -181,6 +186,11 @@ class AuthenticatedUser: RedditUser, NSCoding {
         }
         return nil
     }
+	
+	func asyncGetSavedPosts(api: RedditHandler, completion: ((Subreddit?)->())) {
+		let subreddit = getSavedPosts(api: api)
+		completion(subreddit)
+	}
     
     /**
     Asyncriously get subscribed subreddits and then performs completion handler with the results

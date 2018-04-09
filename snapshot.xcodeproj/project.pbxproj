@@ -11,6 +11,8 @@
 		3447EC7E205B289F00D88926 /* MaxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3447EC7D205B289F00D88926 /* MaxViewController.swift */; };
 		345A31EB205F1A1500C7EE50 /* GifPlox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345A31EA205F1A1500C7EE50 /* GifPlox.swift */; };
 		3476B71F205760CD000704B0 /* RedditHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476B71E205760CC000704B0 /* RedditHandler.swift */; };
+		347F152D207ACCA300A74DCE /* BugsFeaturesLog in Resources */ = {isa = PBXBuildFile; fileRef = 347F152C207ACCA300A74DCE /* BugsFeaturesLog */; };
+		347F152F207AD18E00A74DCE /* About in Resources */ = {isa = PBXBuildFile; fileRef = 347F152E207AD18E00A74DCE /* About */; };
 		34960FA32057171A00977A53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34960FA22057171A00977A53 /* AppDelegate.swift */; };
 		34960FA52057171A00977A53 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34960FA42057171A00977A53 /* PostsView.swift */; };
 		34960FA82057171A00977A53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34960FA62057171A00977A53 /* Main.storyboard */; };
@@ -46,6 +48,8 @@
 		3447EC7D205B289F00D88926 /* MaxViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxViewController.swift; sourceTree = "<group>"; };
 		345A31EA205F1A1500C7EE50 /* GifPlox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifPlox.swift; sourceTree = "<group>"; };
 		3476B71E205760CC000704B0 /* RedditHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedditHandler.swift; sourceTree = "<group>"; };
+		347F152C207ACCA300A74DCE /* BugsFeaturesLog */ = {isa = PBXFileReference; lastKnownFileType = text; path = BugsFeaturesLog; sourceTree = "<group>"; };
+		347F152E207AD18E00A74DCE /* About */ = {isa = PBXFileReference; lastKnownFileType = text; path = About; sourceTree = "<group>"; };
 		34960F9F2057171A00977A53 /* snapshot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = snapshot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		34960FA22057171A00977A53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		34960FA42057171A00977A53 /* PostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
@@ -128,6 +132,8 @@
 				34960FAE2057171A00977A53 /* LaunchScreen.storyboard */,
 				34960FB12057171A00977A53 /* Info.plist */,
 				34960FA92057171A00977A53 /* snapshot.xcdatamodeld */,
+				347F152C207ACCA300A74DCE /* BugsFeaturesLog */,
+				347F152E207AD18E00A74DCE /* About */,
 			);
 			path = snapshot;
 			sourceTree = "<group>";
@@ -244,11 +250,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				347F152F207AD18E00A74DCE /* About in Resources */,
 				34960FB02057171A00977A53 /* LaunchScreen.storyboard in Resources */,
 				5A1AED4020633D8200D70878 /* PopupView.xib in Resources */,
 				34960FAD2057171A00977A53 /* Assets.xcassets in Resources */,
 				5A933349206C1F740037F719 /* MoreInfoView.xib in Resources */,
 				34960FA82057171A00977A53 /* Main.storyboard in Resources */,
+				347F152D207ACCA300A74DCE /* BugsFeaturesLog in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,7 +431,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5PAKG7TRL3;
+				DEVELOPMENT_TEAM = PH5FB4GG2Y;
 				INFOPLIST_FILE = snapshot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;
@@ -438,7 +446,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5PAKG7TRL3;
+				DEVELOPMENT_TEAM = PH5FB4GG2Y;
 				INFOPLIST_FILE = snapshot/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lapis.snapshot;

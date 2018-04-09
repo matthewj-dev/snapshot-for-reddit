@@ -1,0 +1,19 @@
+Bugs:
+* Flickering images when in dark mode
+* when brightness dims the images flicker on both the user view and posts view
+* Saved post images do not load full resolution
+* Crappy Signal Mode doesn't seem to work
+* User saved posts do not disappear after loggout until app restart
+* All of the different user fields still appear, but blank, when signed out.
+* If you refuse to sign in then there is no way to sign in until restarting the app.
+* on first signin saved posts do not appear until restart
+*
+
+Features:
+* r/All
+* 3D touch on saved post images
+* icon and splash screen
+* About page
+* comment some stuff that is missing here and there
+* 
+

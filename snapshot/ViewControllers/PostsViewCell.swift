@@ -16,5 +16,8 @@ class PostsViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         thumbnail.image = nil
+		thumbnail.layer.cornerRadius = 10
+		thumbnail.clipsToBounds = true
+		
     }
 }

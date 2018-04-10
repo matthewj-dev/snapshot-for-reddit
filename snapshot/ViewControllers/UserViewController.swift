@@ -11,11 +11,6 @@ import SafariServices
 
 class UserViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, DarkMode, RedditView {
 	
-	override func viewDidDisappear(_ animated: Bool) {
-		super.viewDidDisappear(true)
-		
-	}
-	
 	func redditUserChanged(loggedIn: Bool) {
 		if loggedIn {
 			redditAPI.authenticatedUser?.asyncGetSavedPosts(api: redditAPI, completion: {
@@ -29,12 +24,21 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 							imagePairs.append(ImageCachePair(key: key, url: url))
 						}
 					}
-					self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 5, completion: {
-						self.savedPostsTable.reloadData()
+					self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 0, completion: {
+						if self.savedPosts != nil {
+							self.savedPostsTable.beginUpdates()
+							for i in 0 ..< self.savedPosts!.postCount {
+								self.savedPostsTable.insertRows(at: [IndexPath(row: i, section: 0)], with: .top)
+							}
+							self.savedPostsTable.endUpdates()
+							self.navigationItem.rightBarButtonItem?.isEnabled = true
+						}
+						
 					})
 				}
 			})
 			self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logoutUser))
+			self.navigationItem.rightBarButtonItem?.isEnabled = false
 			return
 		}
 		self.navigationItem.title = ""
@@ -45,10 +49,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 		self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Login", style: .done, target: self, action: #selector(callLoginWindow))
 		
 	}
-	
-	var imageCache = ImageCacher()
-	
-	var darkModeEnabled: Bool = false
 	
 	func darkMode(isOn: Bool) {
 		darkModeEnabled = isOn
@@ -74,6 +74,60 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 		}
 	}
 	
+	@IBOutlet weak var karmaView: UIView!
+	@IBOutlet weak var savedPostsTable: UITableView!
+	@IBOutlet weak var linkKarmaLabel: UILabel!
+	@IBOutlet weak var commentKarmaLabel: UILabel!
+	
+    var redditAPI = RedditHandler()
+    var settings = SettingsHandler()
+	var imageCache = ImageCacher()
+	
+	var darkModeEnabled: Bool = false
+    var loginWindow: SFAuthenticationSession!
+    var savedPosts: Subreddit? = nil
+    let manager = FileManager.default
+    
+    override func loadView() {
+        super.loadView()
+        if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
+            redditAPI = api
+			darkModeEnabled = (self.tabBarController as? TabBarControl)!.darkModeEnabled
+			redditUserChanged(loggedIn: true)
+        }
+		else {
+			redditUserChanged(loggedIn: false)
+		}
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+		
+        savedPostsTable.delegate = self
+        savedPostsTable.dataSource = self
+		
+        self.darkMode(isOn: darkModeEnabled)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        
+        if self.redditAPI.authenticatedUser != nil {
+            self.linkKarmaLabel.text = "Post Karma\n \(redditAPI.authenticatedUser!.postKarma!)"
+            self.commentKarmaLabel.text = "Comment Karma\n \(redditAPI.authenticatedUser!.commentKarma!)"
+            return
+        }
+        else {
+			self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Login", style: .done, target: self, action: #selector(callLoginWindow))
+		}
+		callLoginWindow()
+    }
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(true)
+		imageCache.clear()
+	}
 	
 	func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 		if darkModeEnabled {
@@ -121,8 +175,11 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 			}
 			
 			if let key = post.id, let url = post.thumbnail {
-				DispatchQueue.main.async {
-					cell.postThumb.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
+				DispatchQueue.global().async {
+					let image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
+					DispatchQueue.main.async {
+						cell.postThumb.image = image
+					}
 				}
 			}
 		}
@@ -140,68 +197,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 		present(newView, animated: true, completion: {self.savedPostsTable.deselectRow(at: indexPath, animated: true)})
 	}
 	
-	@IBOutlet weak var karmaView: UIView!
-	@IBOutlet weak var savedPostsTable: UITableView!
-	@IBOutlet weak var linkKarmaLabel: UILabel!
-	@IBOutlet weak var commentKarmaLabel: UILabel!
-	
-    var loginWindow: SFAuthenticationSession!
-    var redditAPI = RedditHandler()
-    var settings = SettingsHandler()
-    
-    var savedPosts: Subreddit? = nil
-    let manager = FileManager.default
-    
-    override func loadView() {
-        super.loadView()
-        if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
-            redditAPI = api
-			darkModeEnabled = (self.tabBarController as? TabBarControl)!.darkModeEnabled
-			
-			api.authenticatedUser?.asyncGetSavedPosts(api: api, completion: {
-				(subreddit) in
-				self.savedPosts = subreddit
-				if self.savedPosts != nil {
-					var imagePairs = [ImageCachePair]()
-					for postIndex in 0 ..< self.savedPosts!.postCount {
-						if let key = self.savedPosts?[postIndex]?.id, let url = self.savedPosts?[postIndex]?.thumbnail {
-							imagePairs.append(ImageCachePair(key: key, url: url))
-						}
-					}
-					self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 5, completion: {
-						self.savedPostsTable.reloadData()
-					})
-				}
-			})
-			
-        }
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.navigationController?.navigationBar.prefersLargeTitles = false
-		
-        savedPostsTable.delegate = self
-        savedPostsTable.dataSource = self
-		
-        self.darkMode(isOn: darkModeEnabled)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-        
-        if self.redditAPI.authenticatedUser != nil {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logoutUser))
-            self.linkKarmaLabel.text = "Post Karma\n \(redditAPI.authenticatedUser!.postKarma!)"
-            self.commentKarmaLabel.text = "Comment Karma\n \(redditAPI.authenticatedUser!.commentKarma!)"
-            return
-        }
-        else {
-			self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Login", style: .done, target: self, action: #selector(callLoginWindow))
-		}
-		callLoginWindow()
-    }
-	
 	@objc func callLoginWindow() {
 		// Creates the Safari Authentication view with authorization view
 		loginWindow = SFAuthenticationSession(url: URL(string: "https://www.reddit.com/api/v1/authorize.compact?client_id=udgVMzpax63hJQ&response_type=code&duration=permanent&state=ThisIsATestState&redirect_uri=snapshot://response&scope=identity%20edit%20mysubreddits%20read%20history")!, callbackURLScheme: "snapshot", completionHandler: {url, error in
@@ -217,7 +212,9 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 						tabbar.redditUserChanged(loggedIn: true)
 					}
 				}
-				
+			}
+			else {
+				print(error)
 			}
 		})
 		loginWindow.start()

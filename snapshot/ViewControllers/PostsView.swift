@@ -10,14 +10,10 @@ import UIKit
 import SafariServices
 
 class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate, DarkMode, RedditView {
-    
-    var settingsBoi: SettingsHandler!
-    
+	
     func redditUserChanged(loggedIn: Bool) {
         loadSubredditIntoCollectionView()
-    }
-    
-    var darkModeEnabled: Bool = false
+	}
     
     func darkMode(isOn: Bool) {
         darkModeEnabled = isOn
@@ -42,9 +38,12 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
 
     @IBOutlet weak var postCollection: UICollectionView!
+	
     var subredditToLoad = ""
     
     var ncCenter = NotificationCenter.default
+	var settingsBoi: SettingsHandler!
+	var darkModeEnabled: Bool = false
     
     var redditAPI = RedditHandler()
     var imageCache = ImageCacher()
@@ -223,7 +222,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
                     }
                 }
                 
-                self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 10, completion: {
+                self.imageCache.preload(pairs: imagePairs, IndexToAsyncAt: 0, completion: {
                     self.postCollection.reloadData()
                     self.loadingWheel.stopAnimating()
                 })

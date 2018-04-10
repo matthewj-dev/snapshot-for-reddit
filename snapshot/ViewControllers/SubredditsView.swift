@@ -192,7 +192,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 					self.redditTable.beginUpdates()
 					
 					if self.redditTable.numberOfSections != 2 {
-						self.redditTable.insertSections(IndexSet(integer: 1), with: .right)
+						self.redditTable.insertSections(IndexSet(integer: 1), with: .top)
 					}
 					for i in 0..<self.subreddits.count {
 						// Inserts a row for each Subreddit in list

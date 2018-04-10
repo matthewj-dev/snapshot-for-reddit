@@ -23,12 +23,5 @@ class PostsNavigationController: UINavigationController, RedditView {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-    
-    func redditUserChanged(loggedIn: Bool) {
-        for view in viewControllers {
-            guard let view = view as? RedditView else {continue}
-            view.redditUserChanged(loggedIn: loggedIn)
-        }
-    }
+	}
 }

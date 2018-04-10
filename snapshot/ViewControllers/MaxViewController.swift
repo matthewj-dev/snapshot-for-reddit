@@ -61,10 +61,7 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
         maxView.addGestureRecognizer(holdy)
         maxView.addGestureRecognizer(swippyRight)
         maxView.addGestureRecognizer(swippyLeft)
-        
-        let tapperTwo = UITapGestureRecognizer(target: self, action: #selector(showMoreInfo))
-        postTitle.isUserInteractionEnabled = true
-        postTitle.addGestureRecognizer(tapperTwo)
+		
     }
     
     override func viewDidLoad() {
@@ -281,15 +278,5 @@ class MaxViewController: UIViewController, UIScrollViewDelegate {
             self.viewDidLoad()
         }
     }
-    
-	@objc func showMoreInfo() {
-//		var frame = self.view.frame
-//		frame.size.height = frame.size.height / 2
-//		print(frame.origin, self.view.frame.origin)
-//		print(self.view.frame)
-//		var view = MoreInfoView(frame: frame)
-//
-//		self.view.addSubview(view)
-	}
 	
 }

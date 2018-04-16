@@ -13,7 +13,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 	func redditUserChanged(loggedIn: Bool) {
 		self.subreddits = [String]()
 		if redditTable != nil {
-			if !loggedIn {
+			if !loggedIn && redditTable.numberOfSections == 2 {
 				self.redditTable.deleteSections(IndexSet(integer: 1), with: .automatic)
 			}
 			self.repopulateSubTable()
@@ -184,14 +184,15 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 		if let api = (self.tabBarController as? TabBarControl)?.redditAPI {
 			redditAPI = api
 			
+//			redditTable.reloadData()
 			if redditAPI.authenticatedUser != nil {
 				redditAPI.authenticatedUser!.asyncGetSubscribedSubreddits(api: redditAPI, completition: {(subs) in
 					self.subreddits = subs
 
 					// Starts updates onto the TableView
 					self.redditTable.beginUpdates()
-					
-					if self.redditTable.numberOfSections != 2 {
+
+					if self.redditTable.numberOfSections != 2 && !self.subreddits.isEmpty {
 						self.redditTable.insertSections(IndexSet(integer: 1), with: .top)
 					}
 					for i in 0..<self.subreddits.count {
@@ -200,7 +201,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
 					}
 					// Informs the tableview that the updates have concluded
 					self.redditTable.endUpdates()
-					
+
 				})
 			}
 		}

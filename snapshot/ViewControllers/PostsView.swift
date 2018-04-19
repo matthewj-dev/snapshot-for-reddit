@@ -10,10 +10,10 @@ import UIKit
 import SafariServices
 
 class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UIViewControllerPreviewingDelegate, DarkMode, RedditView {
-	
+    
     func redditUserChanged(loggedIn: Bool) {
         loadSubredditIntoCollectionView()
-	}
+    }
     
     func darkMode(isOn: Bool) {
         darkModeEnabled = isOn
@@ -38,12 +38,12 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
     
 
     @IBOutlet weak var postCollection: UICollectionView!
-	
+    
     var subredditToLoad = ""
     
     var ncCenter = NotificationCenter.default
-	var settingsBoi: SettingsHandler!
-	var darkModeEnabled: Bool = false
+    var settingsBoi: SettingsHandler!
+    var darkModeEnabled: Bool = false
     
     var redditAPI = RedditHandler()
     var imageCache = ImageCacher()
@@ -107,19 +107,19 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
             postCell.backgroundColor = .black
             postCell.postTitle.textColor = .white
             postCell.postTitle.backgroundColor = (UIColor.black).withAlphaComponent(0.75)
-			postCell.layer.cornerRadius = 10
-			postCell.clipsToBounds = true
-			postCell.layer.borderWidth = 0.25
-			postCell.layer.borderColor = UIColor.white.cgColor
+            postCell.layer.cornerRadius = 10
+            postCell.clipsToBounds = true
+            postCell.layer.borderWidth = 0.25
+            postCell.layer.borderColor = UIColor.white.cgColor
         }
         else {
             postCell.backgroundColor = .white
             postCell.postTitle.textColor = .black
             postCell.postTitle.backgroundColor = (UIColor.white).withAlphaComponent(0.75)
-			postCell.layer.cornerRadius = 10
-			postCell.clipsToBounds = true
-			postCell.layer.borderWidth = 0.25
-			postCell.layer.borderColor = (UIColor.black).withAlphaComponent(0.75).cgColor
+            postCell.layer.cornerRadius = 10
+            postCell.clipsToBounds = true
+            postCell.layer.borderWidth = 0.25
+            postCell.layer.borderColor = (UIColor.black).withAlphaComponent(0.75).cgColor
         }
         
         guard let post = subreddit[indexPath.row] else {
@@ -128,9 +128,9 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         
         postCell.postTitle.text = post.title!
         
-		if let key = post.id, let url = post.thumbnail {
-			postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
-		}
+        if let key = post.id, let url = post.thumbnail {
+            postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
+        }
         
         return postCell
         

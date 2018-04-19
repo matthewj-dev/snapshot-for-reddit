@@ -15,6 +15,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
 		if loggedIn {
 			redditAPI.authenticatedUser?.asyncGetSavedPosts(api: redditAPI, completion: {
 				(subreddit) in
+				self.navigationItem.rightBarButtonItem?.isEnabled = true
 				self.navigationItem.title = self.redditAPI.authenticatedUser?.name
 				self.savedPosts = subreddit
 				if self.savedPosts != nil {

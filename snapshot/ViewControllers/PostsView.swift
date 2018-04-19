@@ -129,12 +129,7 @@ class PostsView: UIViewController, UICollectionViewDelegate, UICollectionViewDat
         postCell.postTitle.text = post.title!
         
 		if let key = post.id, let url = post.thumbnail {
-			DispatchQueue.global().async {
-				let image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
-				DispatchQueue.main.async {
-					postCell.thumbnail.image = image
-				}
-			}
+			postCell.thumbnail.image = self.imageCache.retreive(pair: ImageCachePair(key: key, url: url))
 		}
         
         return postCell

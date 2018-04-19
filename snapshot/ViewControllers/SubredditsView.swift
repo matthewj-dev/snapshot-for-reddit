@@ -13,7 +13,7 @@ class SubredditsView: UIViewController, UITableViewDelegate, UITableViewDataSour
     func redditUserChanged(loggedIn: Bool) {
         self.subreddits = [String]()
         if redditTable != nil {
-			if !loggedIn && redditTable.numberOfSections == 2 {
+            if !loggedIn && redditTable.numberOfSections == 2 {
                 self.redditTable.deleteSections(IndexSet(integer: 1), with: .automatic)
             }
             self.repopulateSubTable()
